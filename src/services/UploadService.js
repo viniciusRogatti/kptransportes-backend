@@ -5,6 +5,7 @@ const { exec } = require('child_process');
 const processUpload = async (files) => {
   try {
     const uploadDirectory = path.join(__dirname, '..', '..', 'uploads');
+    const xmlProcessorPath = path.join(__dirname, 'xmlProcessor.js');
     console.log('começo do arquivo');
 
     if (!fs.existsSync(uploadDirectory)) {
@@ -39,7 +40,7 @@ const processUpload = async (files) => {
     function executeXmlProcessor() {
       console.log('Arquivos salvos em', uploadDirectory);
 
-      exec('node xmlProcessor.js', (error, stdout, stderr) => {
+      exec(`node ${xmlProcessorPath}`, (error, stdout, stderr) => {
         if (error) {
           console.error(`Erro ao executar xmlProcessor.js: ${error.message}`);
           return;
