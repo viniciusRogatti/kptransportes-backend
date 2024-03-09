@@ -15,7 +15,17 @@ const processUpload = async (files) => {
     files.forEach((file) => {
       if (file && file.name) {
         const filePath = path.join(uploadDirectory, file.name);
-        file.mv(filePath);
+        try {
+          file.mv(filePath, (err) => {
+            if (err) {
+              console.error(`Erro ao mover o arquivo ${file.name}: ${err}`);
+            } else {
+              console.log(`Arquivo ${file.name} movido com sucesso para ${uploadDirectory}`);
+            }
+          });
+        } catch (err) {
+          console.error(`Erro ao processar o arquivo ${file.name}: ${err}`);
+        }
       }
     });
 
