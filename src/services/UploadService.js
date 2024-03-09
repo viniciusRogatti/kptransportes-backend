@@ -4,46 +4,41 @@ const { exec } = require('child_process');
 
 const processUpload = async (files) => {
   try {
-    // Caminho para o diretório "uploads"
     const uploadDirectory = path.join(__dirname, '..', '..', 'uploads');
     console.log('começo do arquivo');
 
-    // Crie o diretório "uploads" se não existir
     if (!fs.existsSync(uploadDirectory)) {
       fs.mkdirSync(uploadDirectory);
     }
 
-    // Contador para verificar se todos os arquivos foram movidos
     let filesMovedCount = 0;
 
-    // Salve os arquivos no diretório "uploads"
-    files.forEach((file) => {
-      console.log('Arquivo:', file);
-      if (file && file.name) {
-        const filePath = path.join(uploadDirectory, file.name);
+    const moveFile = (file, filePath) => {
+      return new Promise((resolve, reject) => {
         file.mv(filePath, (err) => {
           if (err) {
-            console.error(`Erro ao mover o arquivo ${file.name}: ${err}`);
+            reject(err);
           } else {
-            console.log(`Arquivo ${file.name} movido com sucesso para ${uploadDirectory}`);
-            filesMovedCount++;
-
-            // Verifica se todos os arquivos foram movidos antes de executar xmlProcessor.js
-            if (filesMovedCount === files.length) {
-              executeXmlProcessor();
-            }
+            resolve();
           }
         });
+      });
+    };
+
+    await Promise.all(files.map(async (file) => {
+      if (file && file.name) {
+        const filePath = path.join(uploadDirectory, file.name);
+        await moveFile(file, filePath);
+        console.log(`Arquivo ${file.name} movido com sucesso para ${uploadDirectory}`);
+        filesMovedCount++;
       }
-    });
+    }));
 
     console.log('antes da função do exec');
 
     function executeXmlProcessor() {
-      // Imprima uma mensagem ou retorne uma resposta ao frontend, se necessário
       console.log('Arquivos salvos em', uploadDirectory);
 
-      // Execute o comando "node xmlProcessor.js" aqui
       exec('node xmlProcessor.js', (error, stdout, stderr) => {
         if (error) {
           console.error(`Erro ao executar xmlProcessor.js: ${error.message}`);
@@ -56,6 +51,8 @@ const processUpload = async (files) => {
         console.log(`xmlProcessor.js executado com sucesso: ${stdout}`);
       });
     }
+
+    executeXmlProcessor();
 
     return { success: true, message: 'Arquivos processados com sucesso!' };
   } catch (error) {
