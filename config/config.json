@@ -1,23 +1,23 @@
 {
   "development": {
     "username": "root",
-    "password": "33873228",
-    "database": "kp-transportes",
-    "host": "localhost",
+    "password": "AFplNHrGRNeRPdpRAsUipRBtqSHzhWlw",
+    "database": "railway",
+    "host": "monorail.proxy.rlwy.net",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
-    "password": "33873228",
-    "database": "kp-transportes",
-    "host": "localhost",
+    "password": "AFplNHrGRNeRPdpRAsUipRBtqSHzhWlw",
+    "database": "railway",
+    "host": "monorail.proxy.rlwy.net",
     "dialect": "mysql"
   },
   "production": {
     "username": "root",
-    "password": "33873228",
-    "database": "kp-transportes",
-    "host": "localhost",
+    "password": "AFplNHrGRNeRPdpRAsUipRBtqSHzhWlw",
+    "database": "railway",
+    "host": "monorail.proxy.rlwy.net",
     "dialect": "mysql"
   }
 }
