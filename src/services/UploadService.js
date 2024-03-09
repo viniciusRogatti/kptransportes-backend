@@ -41,8 +41,17 @@ const processUpload = async (files) => {
     function executeXmlProcessor() {
       console.log('comando node', xmlProcessorPath);
 
-      exec('npm run upload', (error, stdout, stderr) => {
-        console.log(`comando node ${xmlProcessorPath} executado com sucesso`);
+      // Caminho completo para o executável npm
+      const npmPath = path.join(__dirname, '..', '..', 'node_modules', '.bin', 'npm');
+
+      // Caminho completo para o script "upload"
+      const uploadScriptPath = path.join(__dirname, '..', '..', 'xmlProcessor.js');
+
+      // Comando completo para executar o script "upload"
+      const fullCommand = `${npmPath} run upload`;
+
+      exec(fullCommand, (error, stdout, stderr) => {
+        console.log(`Script "upload" executado com sucesso`);
         if (error) {
           console.error(`Erro ao executar xmlProcessor.js: ${error.message}`);
           return;
