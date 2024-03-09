@@ -1,7 +1,8 @@
 const uploadService = require('../services/UploadService');
 
 const UploadFiles = async (req, res) => {
-  console.log('FILES =====>',req.body);
+  console.log('FILES =====> body',req.body);
+  console.log('FILES =====>', req.files);
   console.log(req.params);
   // try {
   //   await uploadService.processUpload(req.body);
