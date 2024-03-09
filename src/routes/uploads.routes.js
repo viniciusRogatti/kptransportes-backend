@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const UploadController = require('../controllers/UploadController')
+const UploadController = require('../controllers/UploadController');
 
 const uploadRoutes = Router();
 

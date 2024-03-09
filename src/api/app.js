@@ -6,7 +6,7 @@ const driversRoutes = require('../routes/drivers.routes');
 const carsRoutes = require('../routes/cars.routes');
 const productsRoutes = require('../routes/products.routes');
 const uploadsRoutes = require('../routes/uploads.routes');
-// const puppeteerScript = require('./puppeteer-script');
+
 const app = express();
 
 app.use(express.json());
