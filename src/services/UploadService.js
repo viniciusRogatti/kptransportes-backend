@@ -1,24 +1,25 @@
 const fs = require('fs');
 const path = require('path');
+const xmlDirectory = '../../uploads';
 
 const processUpload = async (files) => {
   try {
     // Caminho para o diretório "uploads"
-    const uploadDirectory = path.join(__dirname, '..', 'uploads');
+    // const uploadDirectory = path.join(__dirname, '..', 'uploads');
 
     // Crie o diretório "uploads" se não existir
-    if (!fs.existsSync(uploadDirectory)) {
-      fs.mkdirSync(uploadDirectory);
+    if (!fs.existsSync(xmlDirectory)) {
+      fs.mkdirSync(xmlDirectory);
     }
 
     // Salve os arquivos no diretório "uploads"
     files.forEach((file) => {
-      const filePath = path.join(uploadDirectory, file.name);
+      const filePath = path.join(xmlDirectory, file.name);
       file.mv(filePath); // Método de movimentação pode variar
     });
 
     // Imprima uma mensagem ou retorne uma resposta ao frontend, se necessário
-    console.log('Arquivos salvos em', uploadDirectory);
+    console.log('Arquivos salvos em', xmlDirectory);
 
     // Execute o comando "node xmlProcessor.js" aqui
     const { exec } = require('child_process');
