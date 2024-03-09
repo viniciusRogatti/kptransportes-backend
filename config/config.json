@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "33873228",
+    "database": "kp-transportes",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "33873228",
+    "database": "kp-transportes",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "33873228",
+    "database": "kp-transportes",
+    "host": "localhost",
+    "dialect": "mysql"
+  }
+}
