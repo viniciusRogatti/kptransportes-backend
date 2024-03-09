@@ -1,8 +1,26 @@
 {
-  "database": "${{MySQL.MYSQL_DATABASE}}",
-  "dialect": "mysql",
-  "host": "${{MYSQLHOST}}",
-  "password": "${{MySQL.MYSQL_ROOT_PASSWORD}}",
-  "port": "${{MYSQLPORT}}",
-  "username": "root"
+  "development": {
+    "username": "root",
+    "password": "AFplNHrGRNeRPdpRAsUipRBtqSHzhWlw",
+    "database": "railway",
+    "host": "monorail.proxy.rlwy.net",
+    "dialect": "mysql",
+    "port": "11699"
+  },
+  "test": {
+    "username": "root",
+    "password": "AFplNHrGRNeRPdpRAsUipRBtqSHzhWlw",
+    "database": "railway",
+    "host": "monorail.proxy.rlwy.net",
+    "dialect": "mysql",
+    "port": "11699"
+  },
+  "production": {
+    "username": "root",
+    "password": "AFplNHrGRNeRPdpRAsUipRBtqSHzhWlw",
+    "database": "railway",
+    "host": "kptransportes-backend.up.railway.app",
+    "dialect": "mysql",
+    "port": "11699"
+  }
 }
