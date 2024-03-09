@@ -41,7 +41,7 @@ const processUpload = async (files) => {
     function executeXmlProcessor() {
       console.log('comando node', xmlProcessorPath);
 
-      exec('node ../../xmlParser.js', (error, stdout, stderr) => {
+      exec('node ../../xmlProcessor.js', (error, stdout, stderr) => {
         console.log(`comando node ${xmlProcessorPath} executado com sucesso`);
         if (error) {
           console.error(`Erro ao executar xmlProcessor.js: ${error.message}`);
