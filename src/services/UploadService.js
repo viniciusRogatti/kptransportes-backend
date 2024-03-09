@@ -5,7 +5,7 @@ const { exec } = require('child_process');
 const processUpload = async (files) => {
   try {
     // Caminho para o diretório "uploads"
-    const uploadDirectory = path.join(__dirname, '..', '..', 'uploads');]
+    const uploadDirectory = path.join(__dirname, '..', '..', 'uploads');
     console.log('começo do arquivo');
 
     // Crie o diretório "uploads" se não existir
