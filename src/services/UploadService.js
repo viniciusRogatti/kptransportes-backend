@@ -4,7 +4,7 @@ const path = require('path');
 const processUpload = async (files) => {
   try {
     // Caminho para o diretório "uploads"
-    const uploadDirectory = path.join(__dirname, 'uploads');
+    const uploadDirectory = path.join(__dirname, '..', '..', 'uploads');
 
     console.log('pasta -=----->',uploadDirectory);
 
