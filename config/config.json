@@ -3,21 +3,21 @@
     "username": "root",
     "password": "AFplNHrGRNeRPdpRAsUipRBtqSHzhWlw",
     "database": "railway",
-    "host": "monorail.proxy.rlwy.net",
+    "host": "https://kptransportes-backend.up.railway.app",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
     "password": "AFplNHrGRNeRPdpRAsUipRBtqSHzhWlw",
     "database": "railway",
-    "host": "monorail.proxy.rlwy.net",
+    "host": "https://kptransportes-backend.up.railway.app",
     "dialect": "mysql"
   },
   "production": {
     "username": "root",
     "password": "AFplNHrGRNeRPdpRAsUipRBtqSHzhWlw",
     "database": "railway",
-    "host": "monorail.proxy.rlwy.net",
+    "host": "https://kptransportes-backend.up.railway.app",
     "dialect": "mysql"
   }
 }
