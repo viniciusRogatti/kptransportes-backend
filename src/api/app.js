@@ -13,10 +13,9 @@ app.use(express.json());
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: false,
-  exposedHeaders: ['Authorization'], // Adicione cabeçalhos personalizados, se necessário
+  exposedHeaders: ['Authorization'],
 }));
 
-// app.use('/puppeteer', puppeteerScript);
 
 app.use('/danfes', danfesRoutes);
 app.use('/trips', tripsRoutes);
