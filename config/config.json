@@ -19,7 +19,7 @@
     "username": "root",
     "password": "AFplNHrGRNeRPdpRAsUipRBtqSHzhWlw",
     "database": "railway",
-    "host": "kptransportes-backend.up.railway.app",
+    "host": "monorail.proxy.rlwy.net",
     "dialect": "mysql",
     "port": "11699"
   }
