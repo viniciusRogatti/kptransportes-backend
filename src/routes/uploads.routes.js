@@ -3,6 +3,6 @@ const UploadController = require('../controllers/UploadController')
 
 const uploadRoutes = Router();
 
-uploadRoutes.post('/upload', UploadController.UploadFiles);
+uploadRoutes.post('/', UploadController.UploadFiles);
 
 module.exports = uploadRoutes;
