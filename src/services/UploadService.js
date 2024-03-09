@@ -16,8 +16,10 @@ const processUpload = async (files) => {
 
     // Salve os arquivos no diretório "uploads"
     files.forEach((file) => {
-      const filePath = path.join(uploadDirectory, file.name);
-      file.mv(filePath); // Método de movimentação pode variar
+      if (file && file.name) {
+        const filePath = path.join(uploadDirectory, file.name);
+        file.mv(filePath);
+      }
     });
 
     // Imprima uma mensagem ou retorne uma resposta ao frontend, se necessário
