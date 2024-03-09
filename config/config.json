@@ -1,26 +1,26 @@
 {
   "development": {
-    "username": "root",
-    "password": "AFplNHrGRNeRPdpRAsUipRBtqSHzhWlw",
-    "database": "railway",
-    "host": "monorail.proxy.rlwy.net",
+    "database": "${{MySQL.MYSQL_DATABASE}}",
     "dialect": "mysql",
-    "port": "11699"
+    "host": "${{MYSQLHOST}}",
+    "password": "${{MySQL.MYSQL_ROOT_PASSWORD}}",
+    "port": "${{MYSQLPORT}}",
+    "username": "root"
   },
   "test": {
-    "username": "root",
-    "password": "AFplNHrGRNeRPdpRAsUipRBtqSHzhWlw",
-    "database": "railway",
-    "host": "monorail.proxy.rlwy.net",
+    "database": "${{MySQL.MYSQL_DATABASE}}",
     "dialect": "mysql",
-    "port": "11699"
+    "host": "${{MYSQLHOST}}",
+    "password": "${{MySQL.MYSQL_ROOT_PASSWORD}}",
+    "port": "${{MYSQLPORT}}",
+    "username": "root"
   },
   "production": {
-    "username": "root",
-    "password": "AFplNHrGRNeRPdpRAsUipRBtqSHzhWlw",
-    "database": "railway",
-    "host": "kptransportes-backend.up.railway.app",
+    "database": "${{MySQL.MYSQL_DATABASE}}",
     "dialect": "mysql",
-    "port": "11699"
+    "host": "${{MYSQLHOST}}",
+    "password": "${{MySQL.MYSQL_ROOT_PASSWORD}}",
+    "port": "${{MYSQLPORT}}",
+    "username": "root"
   }
 }
