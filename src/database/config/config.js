@@ -2,10 +2,10 @@ const { createPool } = require('mysql2/promise');
 require('dotenv').config();
 
 const options = {
-  host: process.env.HOSTNAME || 'kptransportes-backend.up.railway.app/',
+  host: process.env.HOSTNAME || 'monorail.proxy.rlwy.net',
   port: process.env.MYSQL_PORT || '11699',
   database: process.env.MYSQL_DB_NAME || 'railway',
-  username: process.env.MYSQL_USER || 'mysql',
+  username: process.env.MYSQL_USER || 'root',
   password: process.env.MYSQL_PASSWORD || 'password',
   dialect: 'mysql',
   dialectOptions: {
@@ -17,10 +17,10 @@ const options = {
 // dbConfig.js
 
 const pool = createPool({
-  host: process.env.HOSTNAME || 'https://kptransportes-backend.up.railway.app/',
+  host: process.env.HOSTNAME || 'monorail.proxy.rlwy.net',
   port: process.env.MYSQL_PORT || '11699',
   database: process.env.MYSQL_DB_NAME || 'railway',
-  user: process.env.MYSQL_USER || 'mysql',
+  user: process.env.MYSQL_USER || 'root',
   password: process.env.MYSQL_PASSWORD || 'password',
   connectionLimit: 5,
 });
