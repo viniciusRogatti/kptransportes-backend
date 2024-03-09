@@ -5,7 +5,8 @@ const { exec } = require('child_process');
 const processUpload = async (files) => {
   try {
     // Caminho para o diretório "uploads"
-    const uploadDirectory = path.join(__dirname, '..', '..', 'uploads');
+    const uploadDirectory = path.join(__dirname, '..', '..', 'uploads');]
+    console.log('começo do arquivo');
 
     // Crie o diretório "uploads" se não existir
     if (!fs.existsSync(uploadDirectory)) {
@@ -17,6 +18,7 @@ const processUpload = async (files) => {
 
     // Salve os arquivos no diretório "uploads"
     files.forEach((file) => {
+      console.log('Arquivo:', file);
       if (file && file.name) {
         const filePath = path.join(uploadDirectory, file.name);
         file.mv(filePath, (err) => {
@@ -34,6 +36,8 @@ const processUpload = async (files) => {
         });
       }
     });
+
+    console.log('antes da função do exec');
 
     function executeXmlProcessor() {
       // Imprima uma mensagem ou retorne uma resposta ao frontend, se necessário
