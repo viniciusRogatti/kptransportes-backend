@@ -22,6 +22,21 @@ const processUpload = async (files) => {
     // Imprima uma mensagem ou retorne uma resposta ao frontend, se necessário
     console.log('Arquivos salvos em', uploadDirectory);
 
+    // Execute o comando "node xmlProcessor.js" aqui
+    const { exec } = require('child_process');
+    exec('node xmlProcessor.js', (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Erro ao executar xmlProcessor.js: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.error(`Erro ao executar xmlProcessor.js: ${stderr}`);
+        return;
+      }
+      console.log(`xmlProcessor.js executado com sucesso: ${stdout}`);
+    });
+
+    return { success: true, message: 'Arquivos processados com sucesso!' };
   } catch (error) {
     console.error('Erro ao processar os arquivos:', error);
     return { success: false, message: 'Erro ao processar os arquivos.' };
