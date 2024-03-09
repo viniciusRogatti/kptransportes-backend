@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { exec } = require('child_process');
 
 const processUpload = async (files) => {
   try {
@@ -33,7 +34,6 @@ const processUpload = async (files) => {
     console.log('Arquivos salvos em', uploadDirectory);
 
     // Execute o comando "node xmlProcessor.js" aqui
-    const { exec } = require('child_process');
     exec('node xmlProcessor.js', (error, stdout, stderr) => {
       if (error) {
         console.error(`Erro ao executar xmlProcessor.js: ${error.message}`);
