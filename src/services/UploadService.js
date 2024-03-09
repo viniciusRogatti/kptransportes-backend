@@ -35,7 +35,7 @@ const processUpload = async (files) => {
       }
     });
 
-    const executeXmlProcessor = () => {
+    function executeXmlProcessor() {
       // Imprima uma mensagem ou retorne uma resposta ao frontend, se necessário
       console.log('Arquivos salvos em', uploadDirectory);
 
@@ -51,7 +51,7 @@ const processUpload = async (files) => {
         }
         console.log(`xmlProcessor.js executado com sucesso: ${stdout}`);
       });
-    };
+    }
 
     return { success: true, message: 'Arquivos processados com sucesso!' };
   } catch (error) {
