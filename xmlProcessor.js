@@ -1,7 +1,7 @@
 const chokidar = require('chokidar');
 const path = require('path');
 const fs = require('fs');
-const xmlDirectory = path.join(__dirname, 'src', 'uploads'); // Caminho absoluto para o diretório de uploads
+const xmlDirectory = path.join(__dirname, 'uploads'); // Caminho absoluto para o diretório de uploads
 const processXML = require('./xmlParser');
 
 // Verificar se existem arquivos no diretório inicialmente
