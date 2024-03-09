@@ -5,7 +5,7 @@ const { exec } = require('child_process');
 const processUpload = async (files) => {
   try {
     const uploadDirectory = path.join(__dirname, '..', '..', 'uploads');
-    const xmlProcessorPath = path.join(__dirname, 'xmlProcessor.js');
+    const xmlProcessorPath = path.join(__dirname, '..', '..','xmlProcessor.js');
     console.log('começo do arquivo');
 
     if (!fs.existsSync(uploadDirectory)) {
