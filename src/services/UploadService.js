@@ -37,7 +37,9 @@ const processUpload = async (files) => {
 
     console.log('antes da função do exec');
 
+    
     function executeXmlProcessor() {
+      console.log('comando node', xmlProcessorPath);
       console.log('Arquivos salvos em', uploadDirectory);
 
       exec(`node ${xmlProcessorPath}`, (error, stdout, stderr) => {
