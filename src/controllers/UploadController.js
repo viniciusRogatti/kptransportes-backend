@@ -1,16 +1,14 @@
 const uploadService = require('../services/UploadService');
 
 const UploadFiles = async (req, res) => {
-  console.log('FILES =====> body',req.body);
-  console.log('FILES =====>', req.files);
-  console.log(req.params);
-  // try {
-  //   await uploadService.processUpload(req.body);
-  //   res.status(200).json({ message: 'Arquivos recebidos com sucesso!' });
-  // } catch (error) {
-  //   console.error(error);
-  //   res.status(500).json({ error: 'Erro ao processar os arquivos.' });
-  // }
+  console.log('FILES',req.files);
+  try {
+    await uploadService.processUpload(req.files);
+    res.status(200).json({ message: 'Arquivos recebidos com sucesso!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao processar os arquivos.' });
+  }
 };
 
 module.exports = { UploadFiles };
