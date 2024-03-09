@@ -1,7 +1,6 @@
 const uploadService = require('../services/UploadService');
 
 const UploadFiles = async (req, res) => {
-  console.log('FILES',req.files);
   try {
     await uploadService.processUpload(req.files);
     res.status(200).json({ message: 'Arquivos recebidos com sucesso!' });
