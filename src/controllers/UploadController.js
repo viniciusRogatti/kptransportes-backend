@@ -1,7 +1,5 @@
 const uploadService = require('../services/UploadService');
 
-const { processXMLBuffer } = require('../path/para/xmlService');
-
 class UploadFiles {
   static async UploadFiles(req, res) {
     try {
@@ -10,7 +8,7 @@ class UploadFiles {
       }
 
       for (const file of req.files) {
-        await processXMLBuffer(file.buffer);
+        await uploadService.processXML(file.buffer);
       }
 
       return res.status(200).json({ message: 'Arquivos enviados com sucesso!' });
