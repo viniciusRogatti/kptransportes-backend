@@ -3,7 +3,6 @@ const multer = require('multer');
 const UploadController = require('../controllers/UploadController');
 
 const uploadRoutes = Router();
-
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
@@ -12,6 +11,6 @@ const upload = multer({
   },
 });
 
-uploadRoutes.post('/', upload.array('files', 5), UploadController.UploadFiles);
+uploadRoutes.post('/', upload.array('files', 5), UploadController.uploadFiles);
 
 module.exports = uploadRoutes;
