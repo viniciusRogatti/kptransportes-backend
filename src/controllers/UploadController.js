@@ -14,6 +14,9 @@ async function uploadFiles(req, res) {
   } catch (error) {
     console.error('Erro ao processar arquivos:', error);
     return res.status(500).json({ error: 'Erro interno ao processar arquivos.' });
+  } finally {
+    setTimeout(() => {
+    }, 100);
   }
 }
 

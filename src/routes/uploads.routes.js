@@ -8,9 +8,10 @@ const upload = multer({
   storage: storage,
   limits: {
     fileSize: 1024 * 1024 * 10,
+    files: 500,
   },
 });
 
-uploadRoutes.post('/', upload.array('files', 5), UploadController.uploadFiles);
+uploadRoutes.post('/', upload.array('files', 500), UploadController.uploadFiles);
 
 module.exports = uploadRoutes;
