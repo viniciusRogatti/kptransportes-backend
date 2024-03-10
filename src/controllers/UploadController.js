@@ -1,13 +1,24 @@
 const uploadService = require('../services/UploadService');
 
-const UploadFiles = async (req, res) => {
-  try {
-    await uploadService.processUpload(req.files);
-    res.status(200).json({ message: 'Arquivos recebidos com sucesso!' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro ao processar os arquivos.' });
+const { processXMLBuffer } = require('../path/para/xmlService');
+
+class UploadFiles {
+  static async UploadFiles(req, res) {
+    try {
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ error: 'Nenhum arquivo .xml enviado.' });
+      }
+
+      for (const file of req.files) {
+        await processXMLBuffer(file.buffer);
+      }
+
+      return res.status(200).json({ message: 'Arquivos enviados com sucesso!' });
+    } catch (error) {
+      console.error('Erro ao processar arquivos:', error);
+      return res.status(500).json({ error: 'Erro interno ao processar arquivos.' });
+    }
   }
-};
+}
 
 module.exports = { UploadFiles };

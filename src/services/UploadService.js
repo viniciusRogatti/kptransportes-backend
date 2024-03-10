@@ -1,70 +1,110 @@
-const fs = require('fs');
-const path = require('path');
-const { exec } = require('child_process');
+const { promisify } = require('util');
+const xml2js = require('xml2js');
+const { pool } = require('../database/config/config');
+const { Customer, Danfe, Product, DanfeProduct } = require('../database/models');
 
-const processUpload = async (files) => {
+const parseXML = promisify(xml2js.parseString);
+
+async function processXML(xmlBuffer) {
   try {
-    const uploadDirectory = path.join(__dirname, '..', '..', 'uploads');
-    const xmlProcessorPath = path.join(__dirname, '..', '..','xmlProcessor.js');
-    console.log('começo do arquivo');
+    const xmlData = xmlBuffer.toString('utf-8');
+    const parsedData = await parseXML(xmlData);
 
-    if (!fs.existsSync(uploadDirectory)) {
-      fs.mkdirSync(uploadDirectory);
+    const customerInfo = parsedData.nfeProc.NFe[0].infNFe[0].dest[0];
+    const danfeInfo = parsedData.nfeProc.NFe[0].infNFe[0];
+    const productsInfo = parsedData.nfeProc.NFe[0].infNFe[0].det;
+
+    const existingDanfe = await Danfe.findOne({ where: { invoice_number: danfeInfo.ide[0].nNF[0] } });
+
+    if (existingDanfe) {
+      console.log(`A nota fiscal ${danfeInfo.ide[0].nNF[0]} já existe no banco de dados. Ignorando e deletando o XML.`);
+      return;
     }
 
-    let filesMovedCount = 0;
+    const departureTime = danfeInfo.ide[0].dhSaiEnt[0].split("T")[1].split(":")[0];
 
-    const moveFile = (file, filePath) => {
-      return new Promise((resolve, reject) => {
-        file.mv(filePath, (err) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve();
-          }
-        });
-      });
-    };
+    if (departureTime >= 0 && departureTime < 12) {
+      const dataEmissao = new Date(danfeInfo.ide[0].dhSaiEnt[0].split("T")[0]);
+      dataEmissao.setDate(dataEmissao.getDate() - 1);
+      danfeInfo.ide[0].dhSaiEnt[0] = dataEmissao.toISOString().split('T')[0] + 'T' + danfeInfo.ide[0].dhSaiEnt[0].split("T")[1];
+    }
 
-    await Promise.all(files.map(async (file) => {
-      if (file && file.name) {
-        const filePath = path.join(uploadDirectory, file.name);
-        await moveFile(file, filePath);
-        console.log(`Arquivo ${file.name} movido com sucesso para ${uploadDirectory}`);
-        filesMovedCount++;
+    let qVol = 0;
+
+    if (danfeInfo.transp[0].vol[0] && danfeInfo.transp[0].vol[0].qVol !== undefined) {
+      qVol = danfeInfo.transp[0].vol[0].qVol[0];
+    }
+
+    const existingCustomer = await Customer.findOne({ where: { cnpj_or_cpf: customerInfo.CNPJ[0] } });
+
+    if (!existingCustomer) {
+      await pool.query(`
+        INSERT INTO customers (name_or_legal_entity, phone, address, cnpj_or_cpf, city, state, zip_code, neighborhood)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        customerInfo.xNome[0],
+        customerInfo.enderDest[0].fone[0],
+        customerInfo.enderDest[0].xLgr[0],
+        customerInfo.CNPJ[0],
+        customerInfo.enderDest[0].xMun[0],
+        customerInfo.enderDest[0].UF[0],
+        customerInfo.enderDest[0].CEP[0],
+        customerInfo.enderDest[0].xBairro[0],
+      ]);
+    }
+
+    // Inserir informações da DANFE (Danfe) no banco de dados
+    await pool.query(`
+      INSERT INTO danfes (customer_id, invoice_number, barcode, invoice_date, departure_time, total_quantity, gross_weight, net_weight, total_value)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [
+      customerInfo.CNPJ[0],
+      danfeInfo.ide[0].nNF[0],
+      danfeInfo["$"].Id.replace("NFe", ""),
+      danfeInfo.ide[0].dhSaiEnt[0].split("T")[0],
+      danfeInfo.ide[0].dhSaiEnt[0].split("T")[1].split("-")[0],
+      qVol,
+      danfeInfo.transp[0].vol[0].pesoB[0],
+      danfeInfo.transp[0].vol[0].pesoL[0],
+      danfeInfo.total[0].ICMSTot[0].vProd[0],
+    ]);
+
+    // Restante do código para processar os produtos e salvá-los no banco de dados
+    for (const productInfo of productsInfo) {
+      let product;
+
+      const existingProduct = await Product.findOne({ where: { code: productInfo.prod[0].cProd[0] } });
+
+      if (!existingProduct) {
+        console.log(`Produto não existe no banco de dados. Criando novo produto: ${productInfo.prod[0].cProd[0]}`);
+        product = await pool.query(`
+          INSERT INTO products (code, description, price, type)
+          VALUES (?, ?, ?, ?)
+        `, [
+          productInfo.prod[0].cProd[0],
+          productInfo.prod[0].xProd[0],
+          parseFloat(productInfo.prod[0].vUnCom[0].replace(',', '.')),
+          productInfo.prod[0].uCom[0],
+        ]);
       }
-    }));
 
-    console.log('antes da função do exec');
+      await pool.query(`
+        INSERT INTO products_danfe (danfe_id, product_id, quantity, price, total_price, type)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `, [
+        danfeInfo.ide[0].nNF[0],
+        productInfo.prod[0].cProd[0],
+        parseFloat(productInfo.prod[0].qCom[0].replace(',', '.')),
+        parseFloat(productInfo.prod[0].vUnCom[0].replace(',', '.')),
+        parseFloat(productInfo.prod[0].vProd[0].replace(',', '.')),
+        productInfo.prod[0].uCom[0],
+      ]);
+    }
 
-    
-    function executeXmlProcessor() {
-      console.log('Executando script xmlProcessor.js');
-    
-      // Caminho completo para o script "xmlProcessor.js"
-      const xmlProcessorPath = path.join(__dirname, '..', '..', 'xmlProcessor.js');
-    
-      exec(`node ${xmlProcessorPath}`, (error, stdout, stderr) => {
-        console.log(`Script xmlProcessor.js executado com sucesso`);
-        if (error) {
-          console.error(`Erro ao executar xmlProcessor.js: ${error.message}`);
-          return;
-        }
-        if (stderr) {
-          console.error(`Erro ao executar xmlProcessor.js: ${stderr}`);
-          return;
-        }
-        console.log(`xmlProcessor.js executado com sucesso: ${stdout}`);
-      });
-    }    
-
-    executeXmlProcessor();
-
-    return { success: true, message: 'Arquivos processados com sucesso!' };
+    console.log('Informações do XML processadas com sucesso!');
   } catch (error) {
-    console.error('Erro ao processar os arquivos:', error);
-    return { success: false, message: 'Erro ao processar os arquivos.' };
+    console.error('Erro ao processar o XML:', error);
   }
-};
+}
 
-module.exports = { processUpload };
+module.exports = { processXML };
