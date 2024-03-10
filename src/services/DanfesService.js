@@ -3,8 +3,8 @@ const { Op } = require('sequelize');
 const { format } = require('date-fns');
 
 async function getTodayDanfes() {
-  const today = '2024-02-16';
-  // const today = format(new Date(), 'yyyy-MM-dd');
+  // const today = '2024-02-16';
+  const today = format(new Date(), 'yyyy-MM-dd');
 
 
   try {
