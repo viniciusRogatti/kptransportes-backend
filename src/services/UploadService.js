@@ -14,6 +14,8 @@ async function processXML(xmlBuffer) {
     const danfeInfo = parsedData.nfeProc.NFe[0].infNFe[0];
     const productsInfo = parsedData.nfeProc.NFe[0].infNFe[0].det;
 
+    console.log('NF -------------------->', danfeInfo.ide[0].nNF[0]);
+
     const existingDanfe = await Danfe.findOne({ where: { invoice_number: danfeInfo.ide[0].nNF[0] } });
 
     if (existingDanfe) {
