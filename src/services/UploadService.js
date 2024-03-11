@@ -17,7 +17,7 @@ const processXML = async (xmlBuffer) => {
 
     console.log('NF -------------------->', danfeInfo.ide[0].nNF[0]);
 
-    transaction = await sequelize.transaction();
+    transaction = await Danfe.sequelize.transaction();
 
     const existingDanfe = await Danfe.findOne({ where: { invoice_number: danfeInfo.ide[0].nNF[0] }, transaction });
 
