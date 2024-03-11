@@ -1,16 +1,14 @@
 const { Danfe, Customer, Product, DanfeProduct } = require('../database/models'); // Importe os modelos apropriados
 const { Op } = require('sequelize');
-const { format } = require('date-fns');
+const { format, subDays } = require('date-fns');
 
 async function getTodayDanfes() {
-  // const today = '2024-02-16';
-  const today = format(new Date(), 'yyyy-MM-dd');
-
+  const yesterday = format(subDays(new Date(), 1), 'yyyy-MM-dd');
 
   try {
     const danfes = await Danfe.findAll({
       where: {
-        invoice_date: today,
+        invoice_date: yesterday,
       },
       include: [
         {
