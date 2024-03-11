@@ -15,14 +15,12 @@ const processXML = async (xmlBuffer) => {
     const danfeInfo = parsedData.nfeProc.NFe[0].infNFe[0];
     const productsInfo = parsedData.nfeProc.NFe[0].infNFe[0].det;
 
-    console.log('NF -------------------->', danfeInfo.ide[0].nNF[0]);
-
     transaction = await Danfe.sequelize.transaction();
 
     const existingDanfe = await Danfe.findOne({ where: { invoice_number: danfeInfo.ide[0].nNF[0] }, transaction });
 
     if (existingDanfe) {
-      console.log(`A nota fiscal ${danfeInfo.ide[0].nNF[0]} já existe no banco de dados. Ignorando e deletando o XML.`);
+      console.log(`A nota fiscal ${danfeInfo.ide[0].nNF[0]} já existe no banco de dados.`);
       await transaction.commit();
       return;
     }
@@ -41,9 +39,16 @@ const processXML = async (xmlBuffer) => {
       qVol = danfeInfo.transp[0].vol[0].qVol[0];
     }
 
-    const [customer, created] = await Customer.findOrCreate({
-      where: { cnpj_or_cpf: customerInfo.CNPJ[0] },
-      defaults: {
+    // Verificando se o cliente já existe no banco de dados
+    const existingCustomer = await Customer.findOne({ where: { cnpj_or_cpf: customerInfo.CNPJ[0] }, transaction });
+    let customer;
+
+    if (existingCustomer) {
+      customer = existingCustomer;
+      console.log(`O cliente ${customerInfo.CNPJ[0]} já existe no banco de dados.`);
+    } else {
+      // Cliente não existe, cria um novo
+      customer = await Customer.create({
         name_or_legal_entity: customerInfo.xNome[0],
         phone: customerInfo.enderDest[0].fone[0],
         address: customerInfo.enderDest[0].xLgr[0],
@@ -52,9 +57,10 @@ const processXML = async (xmlBuffer) => {
         state: customerInfo.enderDest[0].UF[0],
         zip_code: customerInfo.enderDest[0].CEP[0],
         neighborhood: customerInfo.enderDest[0].xBairro[0],
-      },
-      transaction
-    });
+      }, { transaction });
+      console.log(`Novo cliente ${customerInfo.CNPJ[0]} criado.`);
+    }
+
 
     // Inserir informações da DANFE (Danfe) no banco de dados
     const createdDanfe = await Danfe.create({
@@ -71,19 +77,26 @@ const processXML = async (xmlBuffer) => {
 
     // Restante do código para processar os produtos e salvá-los no banco de dados
     for (const productInfo of productsInfo) {
-      const [product, createdProduct] = await Product.findOrCreate({
-        where: { code: productInfo.prod[0].cProd[0] },
-        defaults: {
-          description: productInfo.prod[0].xProd[0],
-          price: parseFloat(productInfo.prod[0].vUnCom[0].replace(',', '.')),
-          type: productInfo.prod[0].uCom[0],
-        },
-        transaction
-      });
+      const existingProduct = await Product.findOne({ where: { code: productInfo.prod[0].cProd[0] }, transaction });
+
+      // Verificando se o produto já existe
+      if (!existingProduct) {
+        await Product.findOrCreate({
+          where: { code: productInfo.prod[0].cProd[0] },
+          defaults: {
+            description: productInfo.prod[0].xProd[0],
+            price: parseFloat(productInfo.prod[0].vUnCom[0].replace(',', '.')),
+            type: productInfo.prod[0].uCom[0],
+          },
+          transaction
+        });
+      } else {
+        console.log(`O produto ${productInfo.prod[0].cProd[0]} já existe no banco de dados. Ignorando a criação.`);
+      }
 
       await DanfeProduct.create({
         danfe_id: createdDanfe.invoice_number,
-        product_id: product.code,
+        product_id: productInfo.prod[0].cProd[0],
         quantity: parseFloat(productInfo.prod[0].qCom[0].replace(',', '.')),
         price: parseFloat(productInfo.prod[0].vUnCom[0].replace(',', '.')),
         total_price: parseFloat(productInfo.prod[0].vProd[0].replace(',', '.')),
