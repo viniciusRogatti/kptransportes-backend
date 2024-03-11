@@ -7,16 +7,15 @@ async function uploadFiles(req, res) {
     }
 
     for (const file of req.files) {
-      await uploadService.processXML(file.buffer);
+      setTimeout(async () => {
+        await uploadService.processXML(file.buffer);
+      }, 100);
     }
 
     return res.status(200).json({ message: 'Arquivos enviados com sucesso!' });
   } catch (error) {
     console.error('Erro ao processar arquivos:', error);
     return res.status(500).json({ error: 'Erro interno ao processar arquivos.' });
-  } finally {
-    setTimeout(() => {
-    }, 300);
   }
 }
 
