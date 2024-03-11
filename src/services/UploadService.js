@@ -1,11 +1,12 @@
 const { promisify } = require('util');
 const xml2js = require('xml2js');
-const { pool } = require('../database/config/config');
-const { Customer, Danfe, Product, DanfeProduct } = require('../database/models');
+const { Danfe, Customer, Product, DanfeProduct } = require('../database/models'); 
 
 const parseXML = promisify(xml2js.parseString);
 
-async function processXML(xmlBuffer) {
+const processXML = async (xmlBuffer) => {
+  let transaction;
+
   try {
     const xmlData = xmlBuffer.toString('utf-8');
     const parsedData = await parseXML(xmlData);
@@ -16,10 +17,13 @@ async function processXML(xmlBuffer) {
 
     console.log('NF -------------------->', danfeInfo.ide[0].nNF[0]);
 
-    const existingDanfe = await Danfe.findOne({ where: { invoice_number: danfeInfo.ide[0].nNF[0] } });
+    transaction = await sequelize.transaction();
+
+    const existingDanfe = await Danfe.findOne({ where: { invoice_number: danfeInfo.ide[0].nNF[0] }, transaction });
 
     if (existingDanfe) {
       console.log(`A nota fiscal ${danfeInfo.ide[0].nNF[0]} já existe no banco de dados. Ignorando e deletando o XML.`);
+      await transaction.commit();
       return;
     }
 
@@ -37,76 +41,62 @@ async function processXML(xmlBuffer) {
       qVol = danfeInfo.transp[0].vol[0].qVol[0];
     }
 
-    const existingCustomer = await Customer.findOne({ where: { cnpj_or_cpf: customerInfo.CNPJ[0] } });
-
-    if (!existingCustomer) {
-      await pool.query(`
-        INSERT INTO customers (name_or_legal_entity, phone, address, cnpj_or_cpf, city, state, zip_code, neighborhood)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `, [
-        customerInfo.xNome[0],
-        customerInfo.enderDest[0].fone[0],
-        customerInfo.enderDest[0].xLgr[0],
-        customerInfo.CNPJ[0],
-        customerInfo.enderDest[0].xMun[0],
-        customerInfo.enderDest[0].UF[0],
-        customerInfo.enderDest[0].CEP[0],
-        customerInfo.enderDest[0].xBairro[0],
-      ]);
-    }
+    const [customer, created] = await Customer.findOrCreate({
+      where: { cnpj_or_cpf: customerInfo.CNPJ[0] },
+      defaults: {
+        name_or_legal_entity: customerInfo.xNome[0],
+        phone: customerInfo.enderDest[0].fone[0],
+        address: customerInfo.enderDest[0].xLgr[0],
+        cnpj_or_cpf: customerInfo.CNPJ[0],
+        city: customerInfo.enderDest[0].xMun[0],
+        state: customerInfo.enderDest[0].UF[0],
+        zip_code: customerInfo.enderDest[0].CEP[0],
+        neighborhood: customerInfo.enderDest[0].xBairro[0],
+      },
+      transaction
+    });
 
     // Inserir informações da DANFE (Danfe) no banco de dados
-    await pool.query(`
-      INSERT INTO danfes (customer_id, invoice_number, barcode, invoice_date, departure_time, total_quantity, gross_weight, net_weight, total_value)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [
-      customerInfo.CNPJ[0],
-      danfeInfo.ide[0].nNF[0],
-      danfeInfo["$"].Id.replace("NFe", ""),
-      danfeInfo.ide[0].dhSaiEnt[0].split("T")[0],
-      danfeInfo.ide[0].dhSaiEnt[0].split("T")[1].split("-")[0],
-      qVol,
-      danfeInfo.transp[0].vol[0].pesoB[0],
-      danfeInfo.transp[0].vol[0].pesoL[0],
-      danfeInfo.total[0].ICMSTot[0].vProd[0],
-    ]);
+    const createdDanfe = await Danfe.create({
+      customer_id: customer.cnpj_or_cpf,
+      invoice_number: danfeInfo.ide[0].nNF[0],
+      barcode: danfeInfo["$"].Id.replace("NFe", ""),
+      invoice_date: danfeInfo.ide[0].dhSaiEnt[0].split("T")[0],
+      departure_time: danfeInfo.ide[0].dhSaiEnt[0].split("T")[1].split("-")[0],
+      total_quantity: qVol,
+      gross_weight: danfeInfo.transp[0].vol[0].pesoB[0],
+      net_weight: danfeInfo.transp[0].vol[0].pesoL[0],
+      total_value: danfeInfo.total[0].ICMSTot[0].vProd[0],
+    }, { transaction });
 
     // Restante do código para processar os produtos e salvá-los no banco de dados
     for (const productInfo of productsInfo) {
-      let product;
+      const [product, createdProduct] = await Product.findOrCreate({
+        where: { code: productInfo.prod[0].cProd[0] },
+        defaults: {
+          description: productInfo.prod[0].xProd[0],
+          price: parseFloat(productInfo.prod[0].vUnCom[0].replace(',', '.')),
+          type: productInfo.prod[0].uCom[0],
+        },
+        transaction
+      });
 
-      const existingProduct = await Product.findOne({ where: { code: productInfo.prod[0].cProd[0] } });
-
-      if (!existingProduct) {
-        console.log(`Produto não existe no banco de dados. Criando novo produto: ${productInfo.prod[0].cProd[0]}`);
-        product = await pool.query(`
-          INSERT INTO products (code, description, price, type)
-          VALUES (?, ?, ?, ?)
-        `, [
-          productInfo.prod[0].cProd[0],
-          productInfo.prod[0].xProd[0],
-          parseFloat(productInfo.prod[0].vUnCom[0].replace(',', '.')),
-          productInfo.prod[0].uCom[0],
-        ]);
-      }
-
-      await pool.query(`
-        INSERT INTO products_danfe (danfe_id, product_id, quantity, price, total_price, type)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `, [
-        danfeInfo.ide[0].nNF[0],
-        productInfo.prod[0].cProd[0],
-        parseFloat(productInfo.prod[0].qCom[0].replace(',', '.')),
-        parseFloat(productInfo.prod[0].vUnCom[0].replace(',', '.')),
-        parseFloat(productInfo.prod[0].vProd[0].replace(',', '.')),
-        productInfo.prod[0].uCom[0],
-      ]);
+      await ProductsDanfe.create({
+        danfe_id: createdDanfe.invoice_number,
+        product_id: product.code,
+        quantity: parseFloat(productInfo.prod[0].qCom[0].replace(',', '.')),
+        price: parseFloat(productInfo.prod[0].vUnCom[0].replace(',', '.')),
+        total_price: parseFloat(productInfo.prod[0].vProd[0].replace(',', '.')),
+        type: productInfo.prod[0].uCom[0],
+      }, { transaction });
     }
 
     console.log('Informações do XML processadas com sucesso!');
+    await transaction.commit();
   } catch (error) {
+    if (transaction) await transaction.rollback();
     console.error('Erro ao processar o XML:', error);
   }
-}
+};
 
 module.exports = { processXML };
