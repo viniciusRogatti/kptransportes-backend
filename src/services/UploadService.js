@@ -81,7 +81,7 @@ const processXML = async (xmlBuffer) => {
         transaction
       });
 
-      await ProductsDanfe.create({
+      await DanfeProduct.create({
         danfe_id: createdDanfe.invoice_number,
         product_id: product.code,
         quantity: parseFloat(productInfo.prod[0].qCom[0].replace(',', '.')),
