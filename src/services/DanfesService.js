@@ -8,6 +8,8 @@ async function getTodayDanfes() {
   const format = "DD-MM-YYYY";
   // const yesterdayFormat = formatToTimeZone(yesterday, format, { timeZone: "America/Sao_Paulo"});
   const yesterdayFormat = parseFromTimeZone(yesterday, format, { timeZone: "America/Sao_Paulo" });
+  
+  console.log(yesterdayFormat);
 
   try {
     const danfes = await Danfe.findAll({
