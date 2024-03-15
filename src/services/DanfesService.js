@@ -5,8 +5,8 @@ const { format, subDays } = require('date-fns');
 
 async function getTodayDanfes() {
   const format = 'yyyy-MM-dd'
-  const yesterday = formatToTimeZone(new Date(), format, { timeZone: "America/Sao_Paulo"});
-  // const yesterday = format(subDays(new Date(Date.now() - 86400000), 1), '');
+  const today = formatToTimeZone(new Date(), format, { timeZone: "America/Sao_Paulo"});
+  const yesterday = subDays(today, 1);
 
   try {
     const danfes = await Danfe.findAll({
