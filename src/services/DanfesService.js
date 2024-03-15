@@ -5,9 +5,8 @@ const {  parseFromTimeZone } = require('date-fns-timezone');
 
 async function getTodayDanfes() {
   const yesterday = format(subDays(new Date(Date.now() - 86400000), 1), 'dd-MM-yyyy');
-  const format = "DD-MM-YYYY";
   // const yesterdayFormat = formatToTimeZone(yesterday, format, { timeZone: "America/Sao_Paulo"});
-  const yesterdayFormat = parseFromTimeZone(yesterday, format, { timeZone: "America/Sao_Paulo" });
+  const yesterdayFormat = parseFromTimeZone(yesterday, "DD-MM-YYYY", { timeZone: "America/Sao_Paulo" });
   
   console.log(yesterdayFormat);
 
