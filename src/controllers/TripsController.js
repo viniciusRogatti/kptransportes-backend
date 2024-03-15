@@ -87,7 +87,6 @@ const searchTripsByDriver = async (req, res) => {
 const searchTripsByCar = async (req, res) => {
   try {
     const { carId } = req.params;
-    console.log(carId);
     const { date } = req.query;
 
     const trips = await TripsService.searchTripsByCar(carId, date);
