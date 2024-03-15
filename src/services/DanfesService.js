@@ -1,14 +1,9 @@
 const { Danfe, Customer, Product, DanfeProduct } = require('../database/models'); // Importe os modelos apropriados
 const { Op } = require('sequelize');
 const { format, subDays } = require('date-fns');
-const {  parseFromTimeZone } = require('date-fns-timezone');
 
 async function getTodayDanfes() {
   const yesterday = format(subDays(new Date(), 1), 'yyyy-MM-dd');
-  // const yesterdayFormat = formatToTimeZone(yesterday, format, { timeZone: "America/Sao_Paulo"});
-  const yesterdayFormat = parseFromTimeZone(yesterday, "DD/MM/YYYY", { timeZone: "America/Sao_Paulo" });
-  
-  console.log(yesterdayFormat);
 
   try {
     const danfes = await Danfe.findAll({
