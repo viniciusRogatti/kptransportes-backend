@@ -5,6 +5,8 @@ const { format, subDays } = require('date-fns');
 async function getTodayDanfes() {
   const yesterday = format(subDays(new Date(), 1), 'yyyy-MM-dd');
 
+  console.log(yesterday);
+
   try {
     const danfes = await Danfe.findAll({
       where: {
