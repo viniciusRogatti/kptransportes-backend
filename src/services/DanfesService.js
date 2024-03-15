@@ -5,13 +5,14 @@ const {  formatToTimeZone } = require('date-fns-timezone');
 
 async function getTodayDanfes() {
   const format = 'yyyy-MM-dd'
-  const today = formatToTimeZone(new Date(), format, { timeZone: "America/Sao_Paulo"});
-  const yesterday = subDays(today, 1);
+  const yesterday = subDays(new Date(), 1);
+
+  const yesterdayFuso = formatToTimeZone(yesterday, format, { timeZone: "America/Sao_Paulo"});
 
   try {
     const danfes = await Danfe.findAll({
       where: {
-        invoice_date: yesterday,
+        invoice_date: yesterdayFuso,
       },
       include: [
         {
