@@ -2,8 +2,11 @@ const { Danfe, Customer, Product, DanfeProduct } = require('../database/models')
 const { Op } = require('sequelize');
 const { format, subDays } = require('date-fns');
 
+
 async function getTodayDanfes() {
-  const yesterday = format(subDays(new Date(Date.now() - 86400000), 1), 'yyyy-MM-dd');
+  const format = 'yyyy-MM-dd'
+  const yesterday = formatToTimeZone(new Date(), format, { timeZone: "America/Sao_Paulo"});
+  // const yesterday = format(subDays(new Date(Date.now() - 86400000), 1), '');
 
   try {
     const danfes = await Danfe.findAll({
