@@ -19,16 +19,16 @@ const getUserByUsername = async (username) => {
 const verifyToken = async (token) => {
   console.log('TOKEN===================>', token);
   console.log('JWT_SECRET:', process.env.JWT_SECRET);
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  console.log('DECODE ----------->',decoded);
   try {
-    const user = await User.findByPk(decoded.id);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('DECODE ----------->',decoded);
+    // const user = await User.findByPk(decoded.id);
 
-    if (!user) {
-      throw new Error('Usuário não encontrado');
-    }
+    // if (!user) {
+    //   throw new Error('Usuário não encontrado');
+    // }
 
-    return user;
+    // return user;
   } catch (error) {
     console.error('Erro ao verificar o token:', error);
     throw new Error('Token inválido');
