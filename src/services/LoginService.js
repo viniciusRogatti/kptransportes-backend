@@ -19,6 +19,8 @@ const verifyToken = async (token) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findByPk(decoded.id);
 
+    console.log('USER --->',user);
+
     if (!user) {
       throw new Error('Usuário não encontrado');
     }
