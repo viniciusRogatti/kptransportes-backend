@@ -6,8 +6,6 @@ const LoginService = require('../services/LoginService');
 const login = async (req, res) => {
   const { username, password } = req.body;
 
-  console.log('USERNAME E PASSWORD =>>>>>>',username, password);
-
   try {
     const user = await LoginService.getUserByUsername(username);
 
