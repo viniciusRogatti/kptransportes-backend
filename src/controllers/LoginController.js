@@ -29,6 +29,19 @@ const login = async (req, res) => {
     res.status(500).json({ message: 'Erro ao fazer login' });
   }
 };
+
+const verifyToken = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    const user = await LoginService.verifyToken(token);
+
+    res.json({ valid: true, user });
+  } catch (error) {
+    res.json({ valid: false, message: error.message });
+  }
+};
+
 module.exports = {
   login,
+  verifyToken,
 };
