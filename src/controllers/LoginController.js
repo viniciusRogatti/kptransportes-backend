@@ -1,6 +1,6 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-
 const LoginService = require('../services/LoginService');
 
 const login = async (req, res) => {
