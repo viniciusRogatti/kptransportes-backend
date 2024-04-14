@@ -4,7 +4,7 @@ const getUserByUsername = async (username) => {
   try {
     const user = await User.findOne({
       where: {
-        username: 'Marcia',
+        username: username,
       },
     });
 
