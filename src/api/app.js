@@ -6,6 +6,7 @@ const driversRoutes = require('../routes/drivers.routes');
 const carsRoutes = require('../routes/cars.routes');
 const productsRoutes = require('../routes/products.routes');
 const uploadsRoutes = require('../routes/uploads.routes');
+const loginRoutes = require('../routes/login.routes');
 
 const app = express();
 
@@ -23,5 +24,6 @@ app.use('/drivers', driversRoutes);
 app.use('/cars', carsRoutes);
 app.use('/products', productsRoutes);
 app.use('/upload', uploadsRoutes);
+app.use('/login', loginRoutes);
 
 module.exports = app;
