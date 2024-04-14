@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { User } = require('../database/models');
+const jwt = require('jsonwebtoken');
 
 const getUserByUsername = async (username) => {
   try {
@@ -16,7 +17,6 @@ const getUserByUsername = async (username) => {
 }
 
 const verifyToken = async (token) => {
-  console.log('Token --->',token);
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findByPk(decoded.id);
