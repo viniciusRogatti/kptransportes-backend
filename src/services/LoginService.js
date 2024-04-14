@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { User } = require('../database/models');
 
 const getUserByUsername = async (username) => {
@@ -15,11 +16,11 @@ const getUserByUsername = async (username) => {
 }
 
 const verifyToken = async (token) => {
+  console.log('Token --->',token);
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findByPk(decoded.id);
-
-    console.log('USER --->',user);
+    console.log('USERRR ----------->',user);
 
     if (!user) {
       throw new Error('Usuário não encontrado');
