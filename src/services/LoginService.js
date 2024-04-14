@@ -18,6 +18,7 @@ const getUserByUsername = async (username) => {
 
 const verifyToken = async (token) => {
   console.log('TOKEN===================>', token);
+  console.log('JWT_SECRET:', process.env.JWT_SECRET);
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log('DECODE ----------->',decoded);
