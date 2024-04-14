@@ -30,6 +30,7 @@ const verifyToken = async (token) => {
 
     return user;
   } catch (error) {
+    console.error('Erro ao verificar o token:', error);
     throw new Error('Token inválido');
   }
 };
