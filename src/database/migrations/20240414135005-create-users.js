@@ -10,10 +10,19 @@ module.exports = {
       },
       username: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false,
       },
       password: {
         type: Sequelize.STRING,
+        allowNull: false,
+      },
+      permission: { 
+        type: Sequelize.ENUM('admin', 'user'),
+        allowNull: false,
+        defaultValue: 'user',
+      },
+      driver_id: {
+        type: Sequelize.INTEGER,
         allowNull: true,
       },
       created_at: {
