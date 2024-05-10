@@ -12,11 +12,10 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-  origin: ['https://viniciusrogatti.github.io', 'http://localhost:3000'],
+  origin: ['https://viniciusrogatti.github.io', 'http://localhost:3000', 'http://localhost:19000', 'http://localhost:19001'],
   credentials: false,
   exposedHeaders: ['Authorization'],
 }));
-
 
 app.use('/danfes', danfesRoutes);
 app.use('/trips', tripsRoutes);
