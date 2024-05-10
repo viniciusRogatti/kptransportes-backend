@@ -12,7 +12,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-  origin: ['https://viniciusrogatti.github.io', 'http://localhost:3000', 'http://localhost:19000', 'http://localhost:19001'],
+  origin: ['https://viniciusrogatti.github.io', 'http://localhost:3000', 'http://localhost:8081', 'exp://192.168.1.93:8081'],
   credentials: false,
   exposedHeaders: ['Authorization'],
 }));
