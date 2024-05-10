@@ -23,13 +23,13 @@ const login = async (req, res) => {
       expiresIn: '8h',
     });
 
-    console.log('USER ---------------------->',user);
+    const data = {
+      permission: user.permission,
+      driverId: user?.driver_id,
+     }
 
-    if (user.driver_id) {
-      res.status(200).json({ token, driverId: user.driver_id });
-    } else {
-      res.status(200).json({ token });
-    }
+    res.status(200).json({ token, data });
+
 
   } catch (error) {
     console.error(error);
