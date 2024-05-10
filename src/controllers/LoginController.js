@@ -23,7 +23,14 @@ const login = async (req, res) => {
       expiresIn: '8h',
     });
 
-    res.json({ token });
+    console.log('USER ---------------------->',user);
+
+    if (user.driver_id) {
+      res.status(200).json({ token, driverId: user.driver_id });
+    } else {
+      res.status(200).json({ token });
+    }
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Erro ao fazer login' });
@@ -33,7 +40,6 @@ const login = async (req, res) => {
 const verifyToken = async (req, res) => {
   try {
     const test = req.headers.authorization;
-    console.log(test);
     const token = req.headers.authorization.split(' ')[1];
     const user = await LoginService.verifyToken(token);
 

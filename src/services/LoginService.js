@@ -19,7 +19,6 @@ const getUserByUsername = async (username) => {
 const verifyToken = async (token) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('DECODE ----------->',decoded);
     const user = await User.findByPk(decoded.id);
 
     if (!user) {
