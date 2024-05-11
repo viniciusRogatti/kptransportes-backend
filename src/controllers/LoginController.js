@@ -39,11 +39,10 @@ const login = async (req, res) => {
 
 const verifyToken = async (req, res) => {
   try {
-    const test = req.headers.authorization;
     const token = req.headers.authorization.split(' ')[1];
-    const user = await LoginService.verifyToken(token);
+    await LoginService.verifyToken(token);
 
-    res.status(200).json({ valid: true, user });
+    res.status(200).json({ valid: true });
   } catch (error) {
     res.status(500).json({ valid: false, message: error.message });
   }
