@@ -16,6 +16,4 @@ tripsRoutes.put('/add-note/:id', TripsController.addNoteToTrip);
 tripsRoutes.put('/remove-note/:id', TripsController.removeNoteFromTrip);
 tripsRoutes.put('/change-order/:id', TripsController.changeNoteOrder);
 
-
-
 module.exports = tripsRoutes;

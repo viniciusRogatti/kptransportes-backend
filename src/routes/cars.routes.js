@@ -5,6 +5,7 @@ const carsRoutes = Router();
 
 carsRoutes.get('/', CarController.getAllCars);
 carsRoutes.post('/create', CarController.addCar);
+carsRoutes.delete('/delete', CarController.removeCar);
 
 
 module.exports = carsRoutes;
