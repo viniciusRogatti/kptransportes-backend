@@ -12,7 +12,7 @@ const getAllDrivers = async (req, res) => {
 
 const addDriver = async (req, res) => {
   try {
-    const newDriver = await DriverService.addDriver(req.body); // Assumindo que os dados do motorista estão no corpo da requisição
+    const newDriver = await DriverService.addDriver(req.body);
     res.json(newDriver);
   } catch (error) {
     console.error(error);
@@ -21,7 +21,9 @@ const addDriver = async (req, res) => {
 };
 
 const removeDriver = async (req, res) => {
-  const driverId = req.params.id; // Assumindo que o ID do motorista está nos parâmetros da requisição
+  
+  const driverId = req.params.id;
+  console.log(driverId);
   try {
     const removedDriver = await DriverService.removeDriver(driverId);
     res.json(removedDriver);
