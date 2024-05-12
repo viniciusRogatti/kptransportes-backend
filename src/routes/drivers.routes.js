@@ -5,6 +5,6 @@ const driversRoutes = Router();
 
 driversRoutes.get('/', DriverController.getAllDrivers);
 driversRoutes.post('/create', DriverController.addDriver);
-driversRoutes.delete('/delete', DriverController.removeDriver);
+driversRoutes.delete('/delete/:id', DriverController.removeDriver);
 
 module.exports = driversRoutes;
