@@ -19,6 +19,10 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      status: {
+        type: Sequelize.ENUM('pending', 'assigned', 'returned', 'redelivery', 'cancelled', 'delivered'),
+        allowNull: false,
+      },
       barcode: {
         type: Sequelize.STRING,
         allowNull: false,

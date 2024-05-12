@@ -73,6 +73,7 @@ const processXML = async (xmlBuffer) => {
       gross_weight: danfeInfo.transp[0].vol[0].pesoB[0],
       net_weight: danfeInfo.transp[0].vol[0].pesoL[0],
       total_value: danfeInfo.total[0].ICMSTot[0].vProd[0],
+      status: 'pending',
     }, { transaction });
 
     // Restante do código para processar os produtos e salvá-los no banco de dados
