@@ -1,4 +1,4 @@
-const { Danfe, Customer, Product, DanfeProduct } = require('../database/models'); // Importe os modelos apropriados
+const { Danfe, Customer, Product, DanfeProduct } = require('../database/models');
 const { Op } = require('sequelize');
 const { format, subDays } = require('date-fns');
 
@@ -123,25 +123,20 @@ const getDanfesByDate = async (startDate, endDate) => {
   }
 };
 
-const updateDanfeStatus = async (invoiceNumber, newStatus) => {
+const updateDanfesStatus = async (danfes) => {
   try {
-    const updatedDanfe = await Danfe.update({ status: newStatus }, {
-      where: {
-        invoice_number: invoiceNumber,
-      },
-    });
-
-    return updatedDanfe;
+    await Promise.all(danfes.map(async (danfe) => {
+      await Danfe.update({ status: danfe.status }, { where: { invoice_number: danfe.invoice_number } });
+    }));
   } catch (error) {
     throw error;
   }
 };
-
 
 module.exports = {
   getTodayDanfes,
   getDanfeByNf,
   getDanfesByDate,
   getDanfeByBarcode,
-  updateDanfeStatus
+  updateDanfesStatus
 };

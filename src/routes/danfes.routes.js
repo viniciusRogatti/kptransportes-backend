@@ -11,6 +11,6 @@ danfesRoutes.get('/barcode/:id', DanfesController.getDanfeByBarcode);
 
 danfesRoutes.get('/date', DanfesController.getDanfesByDate);
 
-danfesRoutes.put('/status/:invoiceNumber', DanfesController.updateDanfeStatus);
+danfesRoutes.put('/update-status', DanfesController.updateDanfeStatus);
 
 module.exports = danfesRoutes;
