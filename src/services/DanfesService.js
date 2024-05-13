@@ -123,9 +123,25 @@ const getDanfesByDate = async (startDate, endDate) => {
   }
 };
 
+const updateDanfeStatus = async (invoiceNumber, newStatus) => {
+  try {
+    const updatedDanfe = await Danfe.update({ status: newStatus }, {
+      where: {
+        invoice_number: invoiceNumber,
+      },
+    });
+
+    return updatedDanfe;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
 module.exports = {
   getTodayDanfes,
   getDanfeByNf,
   getDanfesByDate,
-  getDanfeByBarcode
+  getDanfeByBarcode,
+  updateDanfeStatus
 };
