@@ -31,20 +31,9 @@ const createTrip = async (tripData) => {
   }
 };
 
-const searchTripsByDriver = async (driverId, date) => {
+const searchTripsByDriver = async (driverId) => {
   try {
-
-    const condition = {
-      driver_id: driverId,
-    };
-
-    if (date) {
-      condition.created_at = { $between: [`${date} 00:00:00`, `${date} 23:59:59`] };
-    } else {
-      // Se a data não for fornecida, busque por viagens do dia atual
-      const today = new Date().toISOString().split('T')[0];
-      condition.created_at = { $between: [`${today} 00:00:00`, `${today} 23:59:59`] };
-    }
+    const condition = { driver_id: driverId };
 
     // Consulta no banco de dados
     const trips = await Trips.findAll({
