@@ -55,7 +55,7 @@ const searchTripsByDriver = async (driverId) => {
   }
 };
 
-const searchTripsByCar = async (carId, date) => {
+const searchTripsByCar = async (carId) => {
   try {
     // Consulta no banco de dados
     const trips = await Trips.findAll({
@@ -121,10 +121,74 @@ const searchTripsByDate = async (date) => {
   }
 };
 
+const editTripStatus = async (tripId, newStatus) => {
+  try {
+    const [rowsUpdated, [updatedTripNote]] = await TripNote.update(
+      { status: newStatus },
+      { where: { id: tripId }, returning: true }
+    );
+
+    if (rowsUpdated !== 1) {
+      throw new Error('Não foi possível atualizar o status da nota da viagem');
+    }
+
+    return updatedTripNote;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const changeNoteOrder = async (noteId, newOrder) => {
+  try {
+    // Encontra a nota da viagem que será modificada
+    const tripNote = await TripNote.findByPk(noteId);
+
+    // Atualiza a ordem da nota
+    tripNote.order = newOrder;
+
+    // Salva a nota com a nova ordem
+    await tripNote.save();
+
+    return tripNote;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteTrip = async (id) => {
+  try {
+    // Remove a viagem
+    await Trips.destroy({ where: { id } });
+
+    return true; // Retorna true se a exclusão for bem-sucedida
+  } catch (error) {
+    throw error;
+  }
+};
+
+const addNoteToTrip = async (id, noteData) => {
+  try {
+    // Encontra a viagem à qual a nota será adicionada
+    const trip = await Trips.findByPk(id);
+
+    // Cria a nova nota da viagem
+    const newTripNote = await TripNote.create({ trip_id: id, ...noteData });
+
+    return newTripNote;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
 module.exports = {
   createTrip,
   searchTripsByNote,
   searchTripsByCar,
   searchTripsByDriver,
   searchTripsByDate,
+  editTripStatus,
+  changeNoteOrder,
+  deleteTrip,
+  addNoteToTrip
 };

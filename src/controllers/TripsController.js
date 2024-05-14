@@ -50,8 +50,8 @@ const removeNoteFromTrip = async (req, res) => {
 const changeNoteOrder = async (req, res) => {
   try {
     const { id } = req.params;
-    const { noteId, newOrder } = req.body; 
-    const updatedTrip = await TripsService.changeNoteOrder(id, noteId, newOrder);
+    const { newOrder } = req.body; 
+    const updatedTrip = await TripsService.changeNoteOrder(id, newOrder);
     return res.json(updatedTrip);
   } catch (error) {
     console.error(error);
@@ -87,9 +87,7 @@ const searchTripsByDriver = async (req, res) => {
 const searchTripsByCar = async (req, res) => {
   try {
     const { carId } = req.params;
-    const { date } = req.query;
-
-    const trips = await TripsService.searchTripsByCar(carId, date);
+    const trips = await TripsService.searchTripsByCar(carId);
 
     res.json({ trips });
   } catch (error) {
@@ -128,16 +126,15 @@ const searchTripsByDate = async (req, res) => {
   }
 };
 
-
 module.exports = {
   createTrip,
+  searchTripsByNote,
+  searchTripsByCar,
+  searchTripsByDriver,
+  searchTripsByDate,
   editTripStatus,
-  addNoteToTrip,
-  removeNoteFromTrip,
   changeNoteOrder,
   deleteTrip,
-  searchTripsByDriver,
-  searchTripsByCar,
-  searchTripsByNote,
-  searchTripsByDate,
+  addNoteToTrip,
+  removeNoteFromTrip,
 };
