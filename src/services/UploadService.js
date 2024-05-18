@@ -46,7 +46,7 @@ const processXML = async (xmlBuffer) => {
 
     if (existingCustomer) {
       customer = existingCustomer;
-      logMessages.push(`O cliente ${customerInfo.CNPJ[0]} já existe no banco de dados.`);
+      console.log(`O cliente ${customerInfo.CNPJ[0]} já existe no banco de dados.`);
     } else {
       // Cliente não existe, cria um novo
       customer = await Customer.create({
@@ -89,7 +89,7 @@ const processXML = async (xmlBuffer) => {
         }, { transaction });
         logMessages.push(`Novo produto ${productInfo.prod[0].cProd[0]} criado.`);
       } else {
-        logMessages.push(`O produto ${productInfo.prod[0].cProd[0]} já existe no banco de dados. Ignorando a criação.`);
+        console.log(`O produto ${productInfo.prod[0].cProd[0]} já existe no banco de dados. Ignorando a criação.`);
       }
 
       await DanfeProduct.create({
