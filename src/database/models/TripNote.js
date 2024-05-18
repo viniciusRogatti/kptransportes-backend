@@ -8,12 +8,24 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    city: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    customer_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     status: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     order: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    gross_weight: {
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
     created_at: {

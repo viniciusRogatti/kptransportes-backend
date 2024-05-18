@@ -27,6 +27,13 @@ module.exports = {
         updated_at: new Date(),
       },
       {
+        username: 'Karine',
+        password: bcrypt.hashSync('karine@kp', 10),
+        permission: 'admin',
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
         username: 'Jonathan',
         password: bcrypt.hashSync('isafuracao', 10),
         permission: 'user',

@@ -23,12 +23,24 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      city: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      customer_name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       status: {
         type: Sequelize.STRING,
         allowNull: false,
       },
       order: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      gross_weight: {
+        type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
       created_at: {

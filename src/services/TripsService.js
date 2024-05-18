@@ -43,7 +43,7 @@ const searchTripsByDriver = async (driverId) => {
         { model: Car, attributes: ['id', 'model', 'license_plate'] },
         {
           model: TripNote,
-          attributes: ['id', 'invoice_number', 'status', 'order'],
+          attributes: ['id', 'invoice_number','customer_name', 'city', 'gross_weight', 'status', 'order'],
         },
       ],
       order: [['created_at', 'DESC']],
@@ -65,7 +65,7 @@ const searchTripsByCar = async (carId) => {
         { model: Car, attributes: ['id', 'model', 'license_plate'] },
         {
           model: TripNote,
-          attributes: ['id', 'invoice_number', 'status', 'order'],
+          attributes: ['id', 'invoice_number','customer_name', 'city', 'gross_weight', 'status', 'order'],
         },
       ],
       order: [['created_at', 'DESC']],
@@ -86,7 +86,7 @@ const searchTripsByNote = async (invoiceNumber) => {
         { model: Car, attributes: ['id', 'model', 'license_plate'] },
         {
           model: TripNote,
-          attributes: ['id', 'invoice_number', 'status', 'order'],
+          attributes: ['id', 'invoice_number','customer_name', 'city', 'gross_weight', 'status', 'order'],
           where: { invoice_number: invoiceNumber },
         },
       ],
@@ -109,7 +109,7 @@ const searchTripsByDate = async (date) => {
         { model: Car, attributes: ['id', 'model', 'license_plate'] },
         {
           model: TripNote,
-          attributes: ['id', 'invoice_number', 'status', 'order'],
+          attributes: ['id', 'invoice_number','customer_name', 'city', 'gross_weight', 'status', 'order'],
         },
       ],
       order: [['created_at', 'DESC']],

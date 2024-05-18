@@ -17,7 +17,7 @@ module.exports = {
         allowNull: false,
       },
       permission: { 
-        type: Sequelize.ENUM('admin', 'user'),
+        type: Sequelize.ENUM('admin', 'user', 'master'),
         allowNull: false,
         defaultValue: 'user',
       },
