@@ -30,7 +30,7 @@ async function uploadFiles(req, res) {
       message: `${count} ${message}`
     }));
 
-    const successMessageIndex = details.findIndex(detail => detail.message.includes('Informações do XML processadas com sucesso!'));
+    const successMessageIndex = details.findIndex(detail => detail.message.includes('XMLs processadas com sucesso!'));
     if (successMessageIndex !== -1) {
       const [successMessage] = details.splice(successMessageIndex, 1);
       details.unshift(successMessage);
