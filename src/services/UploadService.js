@@ -1,6 +1,6 @@
 const { promisify } = require('util');
 const xml2js = require('xml2js');
-const { Danfe, Customer, Product, DanfeProduct } = require('../database/models'); 
+const { Danfe, Customer, Product, DanfeProduct } = require('../database/models');
 
 const parseXML = promisify(xml2js.parseString);
 
@@ -22,7 +22,7 @@ const processXML = async (xmlBuffer) => {
     if (existingDanfe) {
       console.log(`A nota fiscal ${danfeInfo.ide[0].nNF[0]} já existe no banco de dados.`);
       await transaction.commit();
-      return;
+      return { success: false, message: `A nota fiscal ${danfeInfo.ide[0].nNF[0]} já existe no banco de dados.` };
     }
 
     const departureTime = danfeInfo.ide[0].dhSaiEnt[0].split("T")[1].split(":")[0];
@@ -59,8 +59,8 @@ const processXML = async (xmlBuffer) => {
         neighborhood: customerInfo.enderDest[0].xBairro[0],
       }, { transaction });
       console.log(`Novo cliente ${customerInfo.CNPJ[0]} criado.`);
+      return { success: true, message: `Novo cliente ${customerInfo.CNPJ[0]} criado.` };
     }
-
 
     // Inserir informações da DANFE (Danfe) no banco de dados
     const createdDanfe = await Danfe.create({
@@ -91,6 +91,8 @@ const processXML = async (xmlBuffer) => {
           },
           transaction
         });
+        console.log(`Novo produto ${productInfo.prod[0].cProd[0]} criado.`);
+        return { success: true, message: `Novo produto ${productInfo.prod[0].cProd[0]} criado.` };
       } else {
         console.log(`O produto ${productInfo.prod[0].cProd[0]} já existe no banco de dados. Ignorando a criação.`);
       }
@@ -107,9 +109,11 @@ const processXML = async (xmlBuffer) => {
 
     console.log('Informações do XML processadas com sucesso!');
     await transaction.commit();
+    return { success: true, message: 'Informações do XML processadas com sucesso!' };
   } catch (error) {
     if (transaction) await transaction.rollback();
     console.error('Erro ao processar o XML:', error);
+    return { success: false, message: `Erro ao processar o XML: ${error.message}` };
   }
 };
 
