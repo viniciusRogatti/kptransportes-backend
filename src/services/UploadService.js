@@ -59,7 +59,7 @@ const processXML = async (xmlBuffer) => {
         zip_code: customerInfo.enderDest[0].CEP[0],
         neighborhood: customerInfo.enderDest[0].xBairro[0],
       }, { transaction });
-      logMessages.push(`Novo cliente ${customerInfo.CNPJ[0]} criado.`);
+      console.log(`Novo cliente ${customerInfo.CNPJ[0]} criado.`);
     }
 
     // Inserir informações da DANFE (Danfe) no banco de dados
