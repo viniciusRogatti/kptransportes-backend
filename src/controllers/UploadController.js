@@ -8,7 +8,7 @@ async function uploadFiles(req, res) {
 
     let successful = 0;
     let failed = 0;
-    const details = [];
+    const allDetails = [];
 
     for (const file of req.files) {
       const result = await uploadService.processXML(file.buffer);
@@ -17,8 +17,18 @@ async function uploadFiles(req, res) {
       } else {
         failed++;
       }
-      details.push(...result.logMessages.map(message => ({ success: result.success, message })));
+      allDetails.push(...result.logMessages);
     }
+
+    const detailsCount = allDetails.reduce((acc, message) => {
+      acc[message] = (acc[message] || 0) + 1;
+      return acc;
+    }, {});
+
+    const details = Object.entries(detailsCount).map(([message, count]) => ({
+      success: true,
+      message: `${count} ${message}`
+    }));
 
     return res.status(200).json({
       message: 'Arquivos processados.',

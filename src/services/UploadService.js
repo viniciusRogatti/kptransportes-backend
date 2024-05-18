@@ -102,7 +102,7 @@ const processXML = async (xmlBuffer) => {
       }, { transaction });
     }
 
-    logMessages.push('Informações do XML processadas com sucesso!');
+    logMessages.push('XMLs processadas com sucesso!');
     await transaction.commit();
     return { success: true, logMessages };
   } catch (error) {
