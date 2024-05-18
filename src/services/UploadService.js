@@ -1,11 +1,12 @@
 const { promisify } = require('util');
 const xml2js = require('xml2js');
-const { Danfe, Customer, Product, DanfeProduct } = require('../database/models');
+const { Danfe, Customer, Product, DanfeProduct } = require('../database/models'); 
 
 const parseXML = promisify(xml2js.parseString);
 
 const processXML = async (xmlBuffer) => {
   let transaction;
+  const logMessages = [];  // Para armazenar mensagens de log detalhadas
 
   try {
     const xmlData = xmlBuffer.toString('utf-8');
@@ -20,9 +21,9 @@ const processXML = async (xmlBuffer) => {
     const existingDanfe = await Danfe.findOne({ where: { invoice_number: danfeInfo.ide[0].nNF[0] }, transaction });
 
     if (existingDanfe) {
-      console.log(`A nota fiscal ${danfeInfo.ide[0].nNF[0]} já existe no banco de dados.`);
+      logMessages.push(`A nota fiscal ${danfeInfo.ide[0].nNF[0]} já existe no banco de dados.`);
       await transaction.commit();
-      return { success: false, message: `A nota fiscal ${danfeInfo.ide[0].nNF[0]} já existe no banco de dados.` };
+      return { success: true, message: `A nota fiscal ${danfeInfo.ide[0].nNF[0]} já existe no banco de dados.`, logMessages };
     }
 
     const departureTime = danfeInfo.ide[0].dhSaiEnt[0].split("T")[1].split(":")[0];
@@ -45,7 +46,7 @@ const processXML = async (xmlBuffer) => {
 
     if (existingCustomer) {
       customer = existingCustomer;
-      console.log(`O cliente ${customerInfo.CNPJ[0]} já existe no banco de dados.`);
+      logMessages.push(`O cliente ${customerInfo.CNPJ[0]} já existe no banco de dados.`);
     } else {
       // Cliente não existe, cria um novo
       customer = await Customer.create({
@@ -58,8 +59,7 @@ const processXML = async (xmlBuffer) => {
         zip_code: customerInfo.enderDest[0].CEP[0],
         neighborhood: customerInfo.enderDest[0].xBairro[0],
       }, { transaction });
-      console.log(`Novo cliente ${customerInfo.CNPJ[0]} criado.`);
-      return { success: true, message: `Novo cliente ${customerInfo.CNPJ[0]} criado.` };
+      logMessages.push(`Novo cliente ${customerInfo.CNPJ[0]} criado.`);
     }
 
     // Inserir informações da DANFE (Danfe) no banco de dados
@@ -76,25 +76,20 @@ const processXML = async (xmlBuffer) => {
       status: 'pending',
     }, { transaction });
 
-    // Restante do código para processar os produtos e salvá-los no banco de dados
+    // Processar produtos
     for (const productInfo of productsInfo) {
       const existingProduct = await Product.findOne({ where: { code: productInfo.prod[0].cProd[0] }, transaction });
 
-      // Verificando se o produto já existe
       if (!existingProduct) {
-        await Product.findOrCreate({
-          where: { code: productInfo.prod[0].cProd[0] },
-          defaults: {
-            description: productInfo.prod[0].xProd[0],
-            price: parseFloat(productInfo.prod[0].vUnCom[0].replace(',', '.')),
-            type: productInfo.prod[0].uCom[0],
-          },
-          transaction
-        });
-        console.log(`Novo produto ${productInfo.prod[0].cProd[0]} criado.`);
-        return { success: true, message: `Novo produto ${productInfo.prod[0].cProd[0]} criado.` };
+        await Product.create({
+          code: productInfo.prod[0].cProd[0],
+          description: productInfo.prod[0].xProd[0],
+          price: parseFloat(productInfo.prod[0].vUnCom[0].replace(',', '.')),
+          type: productInfo.prod[0].uCom[0],
+        }, { transaction });
+        logMessages.push(`Novo produto ${productInfo.prod[0].cProd[0]} criado.`);
       } else {
-        console.log(`O produto ${productInfo.prod[0].cProd[0]} já existe no banco de dados. Ignorando a criação.`);
+        logMessages.push(`O produto ${productInfo.prod[0].cProd[0]} já existe no banco de dados. Ignorando a criação.`);
       }
 
       await DanfeProduct.create({
@@ -107,13 +102,14 @@ const processXML = async (xmlBuffer) => {
       }, { transaction });
     }
 
-    console.log('Informações do XML processadas com sucesso!');
+    logMessages.push('Informações do XML processadas com sucesso!');
     await transaction.commit();
-    return { success: true, message: 'Informações do XML processadas com sucesso!' };
+    return { success: true, logMessages };
   } catch (error) {
     if (transaction) await transaction.rollback();
     console.error('Erro ao processar o XML:', error);
-    return { success: false, message: `Erro ao processar o XML: ${error.message}` };
+    logMessages.push(`Erro ao processar o XML: ${error.message}`);
+    return { success: false, logMessages };
   }
 };
 
