@@ -204,20 +204,19 @@ const searchTripsByPeriod = async (driverId, startDate, endDate) => {
     throw error;
   }
 };
-
 const removeNoteFromTrip = async (tripId, noteId) => {
   try {
-    // Remover a nota da tabela TripNote
-    await TripNote.destroy({ where: { id: noteId, trip_id: tripId } });
-    
-    // Remover a referência da nota na tabela Trip
-    await Trips.update({ noteId: null }, { where: { id: tripId } });
+    const trip = await Trips.findByPk(tripId);
+
+    trip.TripNotes = trip.TripNotes.filter(note => note.id !== noteId);
+
+    await trip.save();
 
     return true;
   } catch (error) {
     throw error;
   }
-};
+}
 
 
 module.exports = {
