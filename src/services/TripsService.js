@@ -207,7 +207,7 @@ const searchTripsByPeriod = async (driverId, startDate, endDate) => {
 
 const removeNoteFromTrip = async (tripId, noteId) => {
   try {
-    await TripNote.destroy({ where: { id: noteId, trip_id: tripId } }, { transaction });
+    await TripNote.destroy({ where: { id: noteId, trip_id: tripId } });
     return true;
   } catch (error) {
     throw error;
