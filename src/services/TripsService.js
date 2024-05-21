@@ -216,13 +216,18 @@ const removeNoteFromTrip = async (tripId, noteId) => {
 
     const updatedNotes = trip.TripNotes.filter(note => note.invoice_number !== noteId);
 
+    // Atualize o campo trip_id para cada nota antes de chamar setTripNotes
+    updatedNotes.forEach(note => {
+      note.trip_id = tripId;
+    });
+
     await trip.setTripNotes(updatedNotes);
 
     return true;
   } catch (error) {
     throw error;
   }
-};
+}
 
 
 module.exports = {
