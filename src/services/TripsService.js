@@ -209,15 +209,6 @@ const removeNoteFromTrip = async (tripId, noteId) => {
   let transaction;
   try {
     transaction = await Trips.sequelize.transaction();
-
-    // Atualiza o status da nota para "pending"
-    const note = await TripNote.findOne({ where: { id: noteId } });
-    if (!note) throw new Error('Nota não encontrada');
-
-    note.status = 'pending';
-    await note.save({ transaction });
-
-    // Remove a nota da viagem
     await TripNote.destroy({ where: { id: noteId, trip_id: tripId } }, { transaction });
 
     await transaction.commit();
