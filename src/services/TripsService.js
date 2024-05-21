@@ -214,20 +214,24 @@ const removeNoteFromTrip = async (tripId, noteId) => {
       throw new Error('Viagem não encontrada');
     }
 
-    const updatedNotes = trip.TripNotes.filter(note => note.invoice_number !== noteId);
+    // Filtra as notas a serem mantidas
+    const updatedNotes = trip.TripNotes.filter(note => note.id !== noteId);
 
-    // Atualize o campo trip_id para cada nota antes de chamar setTripNotes
-    updatedNotes.forEach(note => {
+    // Atualiza cada nota com o trip_id correto
+    await Promise.all(updatedNotes.map(async (note) => {
       note.trip_id = tripId;
-    });
+      await note.save();
+    }));
 
+    // Atualiza a associação das notas à viagem
     await trip.setTripNotes(updatedNotes);
 
     return true;
   } catch (error) {
     throw error;
   }
-}
+};
+
 
 
 module.exports = {

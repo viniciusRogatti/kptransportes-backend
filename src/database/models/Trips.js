@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
   Trips.associate = (models) => {
     Trips.belongsTo(models.Driver, { foreignKey: 'driver_id' });
     Trips.belongsTo(models.Car, { foreignKey: 'car_id' });
-    Trips.hasMany(models.TripNote, { foreignKey: 'trip_id' });
+    Trips.hasMany(models.TripNote, { foreignKey: 'trip_id', as: 'TripNotes' });
   };
 
   return Trips;
