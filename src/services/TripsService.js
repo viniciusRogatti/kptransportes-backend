@@ -204,6 +204,7 @@ const searchTripsByPeriod = async (driverId, startDate, endDate) => {
     throw error;
   }
 };
+
 const removeNoteFromTrip = async (tripId, noteId) => {
   try {
     const trip = await Trips.findByPk(tripId);
