@@ -180,6 +180,53 @@ const addNoteToTrip = async (id, noteData) => {
   }
 };
 
+const searchTripsByPeriod = async (driverId, startDate, endDate) => {
+  try {
+    const trips = await Trips.findAll({
+      where: {
+        driver_id: driverId,
+        date: {
+          [Op.between]: [startDate, endDate]
+        }
+      },
+      include: [
+        { model: Driver, attributes: ['id', 'name'] },
+        { model: Car, attributes: ['id', 'model', 'license_plate'] },
+        {
+          model: TripNote,
+          attributes: ['id', 'invoice_number', 'customer_name', 'city', 'gross_weight', 'status', 'order'],
+        },
+      ],
+      order: [['date', 'ASC']],
+    });
+    return trips;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const removeNoteFromTrip = async (tripId, noteId) => {
+  let transaction;
+  try {
+    transaction = await Trips.sequelize.transaction();
+
+    // Atualiza o status da nota para "pending"
+    const note = await TripNote.findOne({ where: { id: noteId } });
+    if (!note) throw new Error('Nota não encontrada');
+
+    note.status = 'pending';
+    await note.save({ transaction });
+
+    // Remove a nota da viagem
+    await TripNote.destroy({ where: { id: noteId, trip_id: tripId } }, { transaction });
+
+    await transaction.commit();
+    return note;
+  } catch (error) {
+    if (transaction) await transaction.rollback();
+    throw error;
+  }
+};
 
 module.exports = {
   createTrip,
@@ -190,5 +237,7 @@ module.exports = {
   editTripStatus,
   changeNoteOrder,
   deleteTrip,
-  addNoteToTrip
+  addNoteToTrip,
+  searchTripsByPeriod,
+  removeNoteFromTrip
 };

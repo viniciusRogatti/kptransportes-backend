@@ -38,9 +38,9 @@ const addNoteToTrip = async (req, res) => {
 const removeNoteFromTrip = async (req, res) => {
   try {
     const { id } = req.params;
-    const { noteId } = req.body; 
-    const updatedTrip = await TripsService.removeNoteFromTrip(id, noteId);
-    return res.json(updatedTrip);
+    const { noteId } = req.body;
+    const updatedNote = await TripsService.removeNoteFromTrip(id, noteId);
+    return res.json(updatedNote);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Erro ao remover nota da viagem.' });
@@ -126,12 +126,25 @@ const searchTripsByDate = async (req, res) => {
   }
 };
 
+
+const searchTripsByPeriod = async (req, res) => {
+  try {
+    const { driverId, startDate, endDate } = req.params;
+    const trips = await TripsService.searchTripsByPeriod(driverId, startDate, endDate);
+    res.json({ trips });
+  } catch (error) {
+    console.error('Erro ao buscar viagens por motorista e período:', error);
+    res.status(500).json({ error: 'Erro ao buscar viagens' });
+  }
+};
+
 module.exports = {
   createTrip,
   searchTripsByNote,
   searchTripsByCar,
   searchTripsByDriver,
   searchTripsByDate,
+  searchTripsByPeriod,
   editTripStatus,
   changeNoteOrder,
   deleteTrip,

@@ -11,6 +11,9 @@ tripsRoutes.get('/search/car/:carId', TripsController.searchTripsByCar);
 tripsRoutes.get('/search/note/:invoiceNumber', TripsController.searchTripsByNote);
 tripsRoutes.get('/search/date/:date', TripsController.searchTripsByDate);
 
+tripsRoutes.get('/search/freight/:driverId/:startDate/:endDate', TripsController.searchTripsByPeriod);
+
+
 tripsRoutes.put('/edit-status/:id', TripsController.editTripStatus);
 tripsRoutes.put('/add-note/:id', TripsController.addNoteToTrip);
 tripsRoutes.put('/remove-note/:id', TripsController.removeNoteFromTrip);
