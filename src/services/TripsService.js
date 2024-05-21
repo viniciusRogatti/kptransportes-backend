@@ -207,17 +207,21 @@ const searchTripsByPeriod = async (driverId, startDate, endDate) => {
 
 const removeNoteFromTrip = async (tripId, noteId) => {
   try {
-    const trip = await Trips.findByPk(tripId);
+    const trip = await Trips.findByPk(tripId, { include: TripNote });
 
-    trip.TripNotes = trip.TripNotes.filter(note => note.id !== noteId);
+    if (!trip) {
+      throw new Error('Viagem não encontrada');
+    }
 
-    await trip.save();
+    const updatedNotes = trip.TripNotes.filter(note => note.invoice_number !== noteId); // Filtrar as notas para remover a nota desejada
+
+    await trip.setTripNotes(updatedNotes);
 
     return true;
   } catch (error) {
     throw error;
   }
-}
+};
 
 
 module.exports = {
