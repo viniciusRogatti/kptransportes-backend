@@ -211,7 +211,7 @@ const removeNoteFromTrip = async (tripId, noteId) => {
     await TripNote.destroy({ where: { id: noteId, trip_id: tripId } });
     
     // Remover a referência da nota na tabela Trip
-    await Trip.update({ noteId: null }, { where: { id: tripId } });
+    await Trips.update({ noteId: null }, { where: { id: tripId } });
 
     return true;
   } catch (error) {
