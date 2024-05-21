@@ -208,7 +208,13 @@ const searchTripsByPeriod = async (driverId, startDate, endDate) => {
 const removeNoteFromTrip = async (tripId, noteId) => {
   console.log(`trip id: ${tripId} note id: ${noteId}`);
   try {
-    const trip = await Trips.findByPk(tripId, { include: TripNote });
+    // Inclui TripNote usando o alias correto 'TripNotes'
+    const trip = await Trips.findByPk(tripId, { 
+      include: { 
+        model: TripNote, 
+        as: 'TripNotes' 
+      }
+    });
 
     if (!trip) {
       throw new Error('Viagem não encontrada');
@@ -231,7 +237,6 @@ const removeNoteFromTrip = async (tripId, noteId) => {
     throw error;
   }
 };
-
 
 
 module.exports = {
