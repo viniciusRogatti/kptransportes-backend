@@ -206,6 +206,7 @@ const searchTripsByPeriod = async (driverId, startDate, endDate) => {
 };
 
 const removeNoteFromTrip = async (tripId, noteId) => {
+  console.log(`trip id: ${tripId} note id: ${noteId}`);
   try {
     const trip = await Trips.findByPk(tripId, { include: TripNote });
 
@@ -213,7 +214,7 @@ const removeNoteFromTrip = async (tripId, noteId) => {
       throw new Error('Viagem não encontrada');
     }
 
-    const updatedNotes = trip.TripNotes.filter(note => note.invoice_number !== noteId); // Filtrar as notas para remover a nota desejada
+    const updatedNotes = trip.TripNotes.filter(note => note.invoice_number !== noteId);
 
     await trip.setTripNotes(updatedNotes);
 
