@@ -206,15 +206,10 @@ const searchTripsByPeriod = async (driverId, startDate, endDate) => {
 };
 
 const removeNoteFromTrip = async (tripId, noteId) => {
-  let transaction;
   try {
-    transaction = await Trips.sequelize.transaction();
     await TripNote.destroy({ where: { id: noteId, trip_id: tripId } }, { transaction });
-
-    await transaction.commit();
-    return note;
+    return true;
   } catch (error) {
-    if (transaction) await transaction.rollback();
     throw error;
   }
 };
