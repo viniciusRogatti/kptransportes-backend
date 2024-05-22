@@ -219,11 +219,10 @@ const removeNoteFromTrip = async (tripId, noteId) => {
       throw new Error('Trip note not found');
     }
 
-    // Remove the association between the trip note and the trip
     tripNote.trip_id = null;
     await tripNote.save();
 
-    console.log(`TripNote ${noteId} dissociated from Trip ${tripId}`); // Log para confirmar
+    console.log(`TripNote ${noteId} dissociated from Trip ${tripId}`);
 
     return tripNote;
   } catch (error) {
