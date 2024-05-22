@@ -1,4 +1,4 @@
-const { Trips, TripNote, Driver, Car  } = require('../database/models');
+const { Trips, TripNote, Driver, Car } = require('../database/models');
 
 const createTrip = async (tripData) => {
   let transaction;
@@ -43,7 +43,8 @@ const searchTripsByDriver = async (driverId) => {
         { model: Car, attributes: ['id', 'model', 'license_plate'] },
         {
           model: TripNote,
-          attributes: ['id', 'invoice_number','customer_name', 'city', 'gross_weight', 'status', 'order'],
+          as: 'TripNotes',  // Alias adicionado
+          attributes: ['id', 'invoice_number', 'customer_name', 'city', 'gross_weight', 'status', 'order'],
         },
       ],
       order: [['created_at', 'DESC']],
@@ -59,13 +60,14 @@ const searchTripsByCar = async (carId) => {
   try {
     // Consulta no banco de dados
     const trips = await Trips.findAll({
-      where: { car_id: carId},
+      where: { car_id: carId },
       include: [
         { model: Driver, attributes: ['id', 'name'] },
         { model: Car, attributes: ['id', 'model', 'license_plate'] },
         {
           model: TripNote,
-          attributes: ['id', 'invoice_number','customer_name', 'city', 'gross_weight', 'status', 'order'],
+          as: 'TripNotes',  // Alias adicionado
+          attributes: ['id', 'invoice_number', 'customer_name', 'city', 'gross_weight', 'status', 'order'],
         },
       ],
       order: [['created_at', 'DESC']],
@@ -86,7 +88,8 @@ const searchTripsByNote = async (invoiceNumber) => {
         { model: Car, attributes: ['id', 'model', 'license_plate'] },
         {
           model: TripNote,
-          attributes: ['id', 'invoice_number','customer_name', 'city', 'gross_weight', 'status', 'order'],
+          as: 'TripNotes',  // Alias adicionado
+          attributes: ['id', 'invoice_number', 'customer_name', 'city', 'gross_weight', 'status', 'order'],
           where: { invoice_number: invoiceNumber },
         },
       ],
@@ -109,7 +112,8 @@ const searchTripsByDate = async (date) => {
         { model: Car, attributes: ['id', 'model', 'license_plate'] },
         {
           model: TripNote,
-          attributes: ['id', 'invoice_number','customer_name', 'city', 'gross_weight', 'status', 'order'],
+          as: 'TripNotes',  // Alias adicionado
+          attributes: ['id', 'invoice_number', 'customer_name', 'city', 'gross_weight', 'status', 'order'],
         },
       ],
       order: [['created_at', 'DESC']],
@@ -194,6 +198,7 @@ const searchTripsByPeriod = async (driverId, startDate, endDate) => {
         { model: Car, attributes: ['id', 'model', 'license_plate'] },
         {
           model: TripNote,
+          as: 'TripNotes',  // Alias adicionado
           attributes: ['id', 'invoice_number', 'customer_name', 'city', 'gross_weight', 'status', 'order'],
         },
       ],
@@ -237,7 +242,6 @@ const removeNoteFromTrip = async (tripId, noteId) => {
     throw error;
   }
 };
-
 
 module.exports = {
   createTrip,
