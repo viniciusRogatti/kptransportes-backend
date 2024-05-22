@@ -211,37 +211,26 @@ const searchTripsByPeriod = async (driverId, startDate, endDate) => {
 };
 
 const removeNoteFromTrip = async (tripId, noteId) => {
-  console.log(`trip id: ${tripId} note id: ${noteId}`);
   try {
-    // Inclui TripNote usando o alias correto 'TripNotes'
-    const trip = await Trips.findByPk(tripId, { 
-      include: { 
-        model: TripNote, 
-        as: 'TripNotes' 
-      }
-    });
-
-    if (!trip) {
-      throw new Error('Viagem não encontrada');
+    // Fetch the trip note
+    const tripNote = await TripNote.findOne({ where: { id: noteId, trip_id: tripId } });
+    if (!tripNote) {
+      throw new Error('Trip note not found');
     }
 
-    // Filtra as notas a serem mantidas
-    const updatedNotes = trip.TripNotes.filter(note => note.id !== noteId);
+    // Remove the association between the trip note and the trip
+    tripNote.trip_id = null;
+    await tripNote.save();
 
-    // Atualiza cada nota com o trip_id correto
-    await Promise.all(updatedNotes.map(async (note) => {
-      note.trip_id = tripId;
-      await note.save();
-    }));
+    console.log(`TripNote ${noteId} dissociated from Trip ${tripId}`); // Log para confirmar
 
-    // Atualiza a associação das notas à viagem
-    await trip.setTripNotes(updatedNotes);
-
-    return true;
+    return tripNote;
   } catch (error) {
-    throw error;
+    console.error(error);
+    throw new Error('Erro ao remover nota da viagem');
   }
 };
+
 
 module.exports = {
   createTrip,
