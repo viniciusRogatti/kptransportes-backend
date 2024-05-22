@@ -212,26 +212,22 @@ const searchTripsByPeriod = async (driverId, startDate, endDate) => {
 
 const removeNoteFromTrip = async (tripId, noteId) => {
   try {
-    console.log(`tripId: ${tripId} noteId: ${noteId}`);
-    // Fetch the trip note
-    const tripNote = await TripNote.findOne({ where: { invoice_number: noteId, trip_id: tripId } });
-    if (!tripNote) {
-      throw new Error('Trip note not found');
+    const note = await TripNote.findOne({
+      where: {
+        id: noteId,
+        trip_id: tripId,
+      },
+    });
+
+    if (note) {
+      await note.destroy();
     }
 
-    tripNote.trip_id = null;
-    await tripNote.save();
-
-    console.log(`TripNote ${noteId} dissociated from Trip ${tripId}`);
-
-    return tripNote;
+    return note;
   } catch (error) {
-    console.error(error);
-    throw new Error('Erro ao remover nota da viagem');
+    throw error;
   }
 };
-
-
 
 module.exports = {
   createTrip,
