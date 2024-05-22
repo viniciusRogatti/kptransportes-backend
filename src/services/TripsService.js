@@ -212,6 +212,7 @@ const searchTripsByPeriod = async (driverId, startDate, endDate) => {
 
 const removeNoteFromTrip = async (tripId, noteId) => {
   try {
+    console.log(`tripId: ${tripId} noteId: ${noteId}`);
     // Fetch the trip note
     const tripNote = await TripNote.findOne({ where: { invoice_number: noteId, trip_id: tripId } });
     if (!tripNote) {
@@ -230,6 +231,7 @@ const removeNoteFromTrip = async (tripId, noteId) => {
     throw new Error('Erro ao remover nota da viagem');
   }
 };
+
 
 
 module.exports = {
