@@ -213,7 +213,7 @@ const searchTripsByPeriod = async (driverId, startDate, endDate) => {
 const removeNoteFromTrip = async (tripId, noteId) => {
   try {
     // Fetch the trip note
-    const tripNote = await TripNote.findOne({ where: { id: noteId, trip_id: tripId } });
+    const tripNote = await TripNote.findOne({ where: { invoice_number: noteId, trip_id: tripId } });
     if (!tripNote) {
       throw new Error('Trip note not found');
     }
