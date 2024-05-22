@@ -14,7 +14,7 @@ tripsRoutes.get('/search/date/:date', TripsController.searchTripsByDate);
 tripsRoutes.get('/search/freight/:driverId/:startDate/:endDate', TripsController.searchTripsByPeriod);
 
 
-tripsRoutes.delete('/remove-note/:id', TripsController.removeNoteFromTrip);
+tripsRoutes.put('/remove-note/:id', TripsController.removeNoteFromTrip);
 tripsRoutes.put('/edit-status/:id', TripsController.editTripStatus);
 tripsRoutes.put('/add-note/:id', TripsController.addNoteToTrip);
 tripsRoutes.put('/change-order/:id', TripsController.changeNoteOrder);
