@@ -1,4 +1,4 @@
-const { Danfe, Customer, Product, DanfeProduct } = require('../database/models');
+const { Danfe, Customer, Product, DanfeProduct, TripNote } = require('../database/models');
 const { Op } = require('sequelize');
 const { format, subDays } = require('date-fns');
 
@@ -124,11 +124,27 @@ const getDanfesByDate = async (startDate, endDate) => {
 };
 
 const updateDanfesStatus = async (danfes) => {
+  const transaction = await Sequelize.transaction();
   try {
     await Promise.all(danfes.map(async (danfe) => {
-      await Danfe.update({ status: danfe.status }, { where: { invoice_number: danfe.invoice_number } });
+      // Atualiza o status na tabela Danfe
+      await Danfe.update(
+        { status: danfe.status },
+        { where: { invoice_number: danfe.invoice_number }, transaction }
+      );
+
+      // Atualiza o status na tabela TripNote
+      await TripNote.update(
+        { status: danfe.status },
+        { where: { invoice_number: danfe.invoice_number }, transaction }
+      );
     }));
+
+    // Se tudo correr bem, confirma a transação
+    await transaction.commit();
   } catch (error) {
+    // Se houver qualquer erro, desfaz a transação
+    await transaction.rollback();
     throw error;
   }
 };
