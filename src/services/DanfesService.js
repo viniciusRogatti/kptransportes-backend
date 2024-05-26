@@ -124,7 +124,7 @@ const getDanfesByDate = async (startDate, endDate) => {
 };
 
 const updateDanfesStatus = async (danfes) => {
-  const transaction = await Sequelize.transaction();
+  const transaction = await Danfe.sequelize.transaction();
   try {
     await Promise.all(danfes.map(async (danfe) => {
       // Atualiza o status na tabela Danfe
