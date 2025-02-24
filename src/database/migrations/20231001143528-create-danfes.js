@@ -20,7 +20,7 @@ module.exports = {
         unique: true,
       },
       status: {
-        type: Sequelize.ENUM('pending', 'assigned', 'returned', 'redelivery', 'cancelled', 'delivered'),
+        type: Sequelize.ENUM('pending', 'assigned', 'returned', 'redelivery', 'cancelled', 'delivered', 'on_the_way'),
         allowNull: false,
       },
       barcode: {

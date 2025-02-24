@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
     },
     status: {
-      type: DataTypes.ENUM('pending', 'assigned', 'returned', 'redelivery', 'cancelled', 'delivered'),
+      type: DataTypes.ENUM('pending', 'assigned', 'returned', 'redelivery', 'cancelled', 'delivered', 'on_the_way'),
       allowNull: false,
     },
     barcode: {
@@ -68,9 +68,9 @@ module.exports = (sequelize, DataTypes) => {
     Danfe.hasMany(models.DanfeProduct, {
       foreignKey: 'danfe_id',
       as: 'DanfeProducts',
-    }); 
+    });
   };
-  
-  
+
+
   return Danfe;
 };

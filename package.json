@@ -31,6 +31,7 @@
     "puppeteer": "^22.1.0",
     "sequelize": "^6.33.0",
     "sequelize-cli": "^6.6.1",
+    "socket.io": "^4.8.1",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
