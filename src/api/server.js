@@ -10,6 +10,7 @@ const io = new Server(server, {
   cors: {
     origin: ['https://viniciusrogatti.github.io', 'http://localhost:3000', 'http://localhost:8081', 'exp://192.168.1.93:8081'],
     credentials: false,
+    methods: ["GET", "POST"]
   },
 });
 
