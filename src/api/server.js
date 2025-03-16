@@ -16,6 +16,7 @@ const io = new Server(server, {
 
 // Armazenar o mapeamento dos motoristas
 const motoristas = new Map();
+console.log(motoristas);
 
 io.on('connection', (socket) => {
   console.log(`Novo motorista conectado: ${socket.id}`);
