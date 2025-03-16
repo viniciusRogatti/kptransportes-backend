@@ -1,6 +1,7 @@
 require('dotenv').config();
 const http = require('http');
 const { Server } = require('socket.io');
+const { DriverLocation } = require('./models');
 const app = require('./app');
 
 const port = process.env.PORT || 3001;
@@ -14,17 +15,36 @@ const io = new Server(server, {
   },
 });
 
+// Armazenar o mapeamento dos motoristas
+const motoristas = new Map();
+
 io.on('connection', (socket) => {
   console.log(`Novo motorista conectado: ${socket.id}`);
 
-  socket.on('atualizar_localizacao', (dados) => {
-    // Exemplo de dados: { motoristaId: 123, latitude: -23.55, longitude: -46.63 }
+  // Registrar motorista no backend
+  socket.on('register_driver', ({ driverId }) => {
+    motoristas.set(driverId, socket.id);
+    console.log(`Motorista registrado: ID ${driverId} com socket ${socket.id}`);
+  });
+
+  socket.on('driver_location', async (dados) => {
     console.log('Localização recebida:', dados);
-    io.emit('nova_localizacao', dados); // Envia para todos os clientes conectados
+
+    // Emitir para todos os clientes conectados
+    io.emit('driver_location', dados);
   });
 
   socket.on('disconnect', () => {
     console.log(`Motorista desconectado: ${socket.id}`);
+
+    // Remover motorista do mapa
+    for (let [driverId, socketId] of motoristas.entries()) {
+      if (socketId === socket.id) {
+        motoristas.delete(driverId);
+        console.log(`Motorista removido: ${driverId}`);
+        break;
+      }
+    }
   });
 });
 
