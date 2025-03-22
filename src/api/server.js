@@ -14,37 +14,30 @@ const io = new Server(server, {
   },
 });
 
-// Armazenar o mapeamento dos motoristas
-const motoristas = new Map();
-console.log(motoristas);
-
 io.on('connection', (socket) => {
-  console.log(`Novo motorista conectado: ${socket.id}`);
+  console.log('Motorista conectado: ', socket.id);
 
-  // Registrar motorista no backend
-  socket.on('register_driver', ({ driverId }) => {
-    motoristas.set(driverId, socket.id);
-    console.log(`Motorista registrado: ID ${driverId} com socket ${socket.id}`);
+  // Recebe a localização do motorista
+  socket.on('update-location', (data) => {
+    const { driverId, latitude, longitude, timestamp } = data;
+
+    console.log(`Localização do motorista ${driverId}:`, latitude, longitude, timestamp);
+
+    // Emite a localização para todos os outros clientes conectados
+    io.emit('new-location', {
+      driverId,
+      latitude,
+      longitude,
+      timestamp,
+    });
+
+    // Se você quiser mandar a localização para um cliente específico
+    // socket.broadcast.emit('new-location', data); // Envia para todos, menos o próprio
   });
 
-  socket.on('driver_location', async (dados) => {
-    console.log('Localização recebida:', dados);
-
-    // Emitir para todos os clientes conectados
-    io.emit('driver_location', dados);
-  });
-
+  // Quando o motorista se desconectar
   socket.on('disconnect', () => {
-    console.log(`Motorista desconectado: ${socket.id}`);
-
-    // Remover motorista do mapa
-    for (let [driverId, socketId] of motoristas.entries()) {
-      if (socketId === socket.id) {
-        motoristas.delete(driverId);
-        console.log(`Motorista removido: ${driverId}`);
-        break;
-      }
-    }
+    console.log('Motorista desconectado');
   });
 });
 
