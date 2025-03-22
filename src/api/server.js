@@ -24,7 +24,7 @@ io.on('connection', (socket) => {
     console.log(`Localização do motorista ${driverId}:`, latitude, longitude, timestamp);
 
     // Emite a localização para todos os outros clientes conectados
-    io.emit('new-location', {
+    io.emit('driver_location', {
       driverId,
       latitude,
       longitude,
@@ -32,7 +32,7 @@ io.on('connection', (socket) => {
     });
 
     // Se você quiser mandar a localização para um cliente específico
-    // socket.broadcast.emit('new-location', data); // Envia para todos, menos o próprio
+    // socket.broadcast.emit('driver_location', data); // Envia para todos, menos o próprio
   });
 
   // Quando o motorista se desconectar
