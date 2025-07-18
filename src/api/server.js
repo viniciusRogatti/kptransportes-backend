@@ -1,10 +1,12 @@
 require('dotenv').config();
 const http = require('http');
 const { Server } = require('socket.io');
+const express = require('express');
+const axios = require('axios');
 const app = require('./app');
 
 const port = process.env.PORT || 3001;
-const server = http.createServer(app); // Criando o servidor HTTP a partir do Express
+const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
@@ -14,31 +16,51 @@ const io = new Server(server, {
   },
 });
 
+// WebSocket
 io.on('connection', (socket) => {
   console.log('Motorista conectado: ', socket.id);
 
-  // Recebe a localização do motorista
   socket.on('update-location', (data) => {
     const { driverId, latitude, longitude, timestamp } = data;
 
     console.log(`Localização do motorista ${driverId}:`, latitude, longitude, timestamp);
 
-    // Emite a localização para todos os outros clientes conectados
     io.emit('driver_location', {
       driverId,
       latitude,
       longitude,
       timestamp,
     });
-
-    // Se você quiser mandar a localização para um cliente específico
-    // socket.broadcast.emit('driver_location', data); // Envia para todos, menos o próprio
   });
 
-  // Quando o motorista se desconectar
   socket.on('disconnect', () => {
     console.log('Motorista desconectado');
   });
+});
+
+app.get('/geocode', async (req, res) => {
+  const { address } = req.query;
+
+  if (!address) {
+    return res.status(400).json({ error: 'Endereço é obrigatório' });
+  }
+
+  try {
+    const response = await axios.get('https://nominatim.openstreetmap.org/search', {
+      params: {
+        format: 'json',
+        q: address,
+      },
+      headers: {
+        'User-Agent': 'KPTransportesBot/1.0 (email@exemplo.com)', // substitua se quiser
+      }
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('Erro ao consultar Nominatim:', error.message);
+    res.status(500).json({ error: 'Erro ao buscar coordenadas' });
+  }
 });
 
 server.listen(port, () => {
